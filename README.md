@@ -84,10 +84,18 @@ php bin/console doctrine:fixtures:load
 Once you've installed everything, execute this line in the atedi directory :
 
 ```sh
+ddev start
+```
+
+and open URL `http://atedi.2024.ddev.site/login` with your browser.
+
+or
+
+```sh
 php -S localhost:8000 -t public
 ```
 
-ou
+or
 
 ```sh
 symfony server:start
