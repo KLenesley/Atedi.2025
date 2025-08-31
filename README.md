@@ -81,7 +81,7 @@ php bin/console doctrine:database:create
 
 There are some default datau that you can load into the database. 
 
-Open your CMD in the Atedi directory and copy these lines :
+Open your CMD in the ATEDI directory and copy these lines :
 
 ```
 php bin/console doctrine:migrations:migrate

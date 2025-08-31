@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Atedi{% endblock %}</title>
+        <title>{% block title %}ATEDI{% endblock %}</title>
         {% block stylesheets %}
             <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
             <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
@@ -19,7 +19,7 @@
 
     {% if app.request.get('_route') != 'app_login' %}
         <nav class="navbar navbar-expand-md navbar-dark">
-            <a class="navbar-brand font-weight-bold" href="{{ path('index') }}">Atedi</a>
+            <a class="navbar-brand font-weight-bold" href="{{ path('index') }}">ATEDI</a>
 
             <div class="collapse navbar-collapse">
                 
@@ -75,13 +75,13 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h2 class="modal-title"><i class="fas fa-info-circle mr-3"></i>A propos de Atedi</h2>
+                            <h2 class="modal-title"><i class="fas fa-info-circle mr-3"></i>A propos de ATEDI</h2>
                             <button type="button" class="close" data-dismiss="modal">
                                 <span>&times;</span>
                             </button>
                         </div>
                         <div class="modal-body">
-                            <p>Atedi est un logiciel libre sous licence <a href='https://cecill.info/' target="_blank"><u>CeCILL</u></a>.</p>
+                            <p>ATEDI (<b>A</b>ssistance <b>T</b>echnique <b>E</b>t <b>D</b>épannage <b>I</b>nformatique) est un logiciel libre sous licence <a href='https://cecill.info/' target="_blank"><u>CeCILL</u></a>.</p>
                             <p>Son but est de faciliter la gestion des interventions techniques sur du matériel informatique.</p>
                             <p></p>
                                 
@@ -123,7 +123,7 @@
             </div>
 
             {% if app.request.get('_route') == 'app_login' %}
-                <h4 class="h4 text-center fixed-bottom">©{{ "now"|date("Y") }} - Atedi</h4>
+                <h4 class="h4 text-center fixed-bottom">©{{ "now"|date("Y") }} - ATEDI</h4>
             {% endif %}
 
         </main>

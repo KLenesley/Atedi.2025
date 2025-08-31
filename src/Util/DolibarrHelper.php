@@ -230,7 +230,7 @@ class DolibarrHelper
                         'fk_product' => $fk_product,
                 ];                            
             }
-            $note_private .= "Facture créée automatiquement par Atedi" . "\n";   
+            $note_private .= "Facture créée automatiquement par ATEDI" . "\n";   
             $note_private .= $intervention->getInterventionReport()->getComment();
 
             // Exécuter la requête
