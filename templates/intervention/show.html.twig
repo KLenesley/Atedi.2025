@@ -8,56 +8,64 @@
     <script src="{{ asset('assets/js/menuExpend.js') }}"></script>
 {% endblock %}
 
-{% block body %}
-    <div class='text-center'>	
-        <div class='h2 mb-3 font-weight-bold'>Gestion de la demande d'intervention n°{{ intervention.id }}</div>
-        <a class="grey-btn f-20 px-4 py-2" href="{{ path('intervention_edit', {'id': intervention.id}) }}">Modifier</a>
-        {{ include('intervention/_delete_form.html.twig') }}
-    </div>
-    <hr>
 
-    <div class="container show-container">
-        <div class="row justify-content-around">
-            <div class="container-background col-md-auto mb-auto p-4">
-                <div class='f-20 text-center font-weight-bold'>Informations sur le client</div>
-                <hr>
-                <div class='row text-center'>
-                    <div class='col'><a href="{{ path('client_show', {'id': intervention.client.id}) }}" class='mx-auto grey-btn px-4 py-1' /><i class="fas fa-link mr-3"></i>Accéder à la fiche client</a></div>
+{% block body %}
+<div class='text-center'>	
+    <div class='h2 mb-3 font-weight-bold'>Gestion de la demande d'intervention n°{{ intervention.id }}</div>
+    <a class="grey-btn f-20 px-4 py-2" href="{{ path('intervention_edit', {'id': intervention.id}) }}">Modifier</a>
+    {{ include('intervention/_delete_form.html.twig') }}
+    <form action="" method="post" class="d-inline-block">
+        <button type='submit' name='download' value='request' class='green-btn f-20 px-4 py-2'>Télécharger</button>
+    </form>
+</div>
+<hr>
+
+<div class="container show-container">
+    <div class="row justify-content-around">
+        <div class="container-background col-md-auto mb-auto p-4">
+            <div class='f-20 text-center font-weight-bold'>Informations sur le client</div>
+            <hr>
+            <div class='row text-center'>
+                <div class='col'>
+                    <a href="{{ path('client_show', {'id': intervention.client.id}) }}" class='mx-auto grey-btn px-4 py-1'>
+                        <i class="fas fa-link mr-3"></i>Accéder à la fiche client
+                    </a>
                 </div>
-                <hr>
-                <div class='row mb-2'>
-                    <div class='col-md-auto my-auto'><i class="fas fa-user"></i></div>
-                    <div class='col'>{{ intervention.client.lastName }} {{ intervention.client.firstName }}</div>
-                </div>
-                <hr>
-                <div class='row mb-2'>
-                    <div class='col-md-auto my-auto'><i class="fas fa-phone"></i></div>
-                    <div class='col'>{{ intervention.client.phone }}</div>
-                </div>
-                <hr>
-                <div class='row mb-2'>
-                    <div class='col-md-auto my-auto'><i class="fas fa-at"></i></div>
-                    <div class='col'>{{ intervention.client.email ?: "<div class='missing-info'>Email non-renseignée</div>" }}</div>
-                </div>
-                <hr>
-                <div class='row'>
-                    <div class='col-md-auto my-auto'><i class="fas fa-map-marker-alt"></i></div>
-                    <div class='col'>
-                        <div class="d-flex flex-column">
-                            {% if (intervention.client.street) or (intervention.client.city) or (intervention.client.postalCode) %}
-                                {% if intervention.client.street %}
-                                    <div>{{ intervention.client.street }}</div>
-                                {% endif %}
-                                {% if (intervention.client.city) or (intervention.client.postalCode) %}
-                                    <div>{{ intervention.client.city }} {{ intervention.client.postalCode }}</div>
-                                {% endif %}
-                            {% else %}
-                                <div class='missing-info'>Adresse non-renseignée</div>
+            </div>
+            <hr>
+            <div class='row mb-2'>
+                <div class='col-md-auto my-auto'><i class="fas fa-user"></i></div>
+                <div class='col'>{{ intervention.client.lastName }} {{ intervention.client.firstName }}</div>
+            </div>
+            <hr>
+            <div class='row mb-2'>
+                <div class='col-md-auto my-auto'><i class="fas fa-phone"></i></div>
+                <div class='col'>{{ intervention.client.phone }}</div>
+            </div>
+            <hr>
+            <div class='row mb-2'>
+                <div class='col-md-auto my-auto'><i class="fas fa-at"></i></div>
+                <div class='col'>{{ intervention.client.email ?: "<div class='missing-info'>Email non-renseignée</div>" }}</div>
+            </div>
+            <hr>
+            <div class='row'>
+                <div class='col-md-auto my-auto'><i class="fas fa-map-marker-alt"></i></div>
+                <div class='col'>
+                    <div class="d-flex flex-column">
+                        {% if (intervention.client.street) or (intervention.client.city) or (intervention.client.postalCode) %}
+                            {% if intervention.client.street %}
+                                <div>{{ intervention.client.street }}</div>
                             {% endif %}
-                        </div>
+                            {% if (intervention.client.city) or (intervention.client.postalCode) %}
+                                <div>{{ intervention.client.city }} {{ intervention.client.postalCode }}</div>
+                            {% endif %}
+                        {% else %}
+                            <div class='missing-info'>Adresse non-renseignée</div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
+        </div>
 
 
 
@@ -191,21 +199,7 @@
                 </div>
             </div>
 
-
-            <div class='d-flex flex-column col-md-auto mb-auto'>
-                <div class="container-background mb-5 p-4">
-                    <div class='f-20 text-center font-weight-bold'>Demande d'intervention</div>
-                    <hr>
-                    <div class='row'>
-                        <div class='col text-center'>
-                            <form action="" method="post">
-                                <i class="fas fa-download mr-3 my-auto"></i>
-                                <button type='submit' name='download' value='request' class='grey-btn px-4 py-1'>Télécharger</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
+     
                 {% if intervention.interventionReport.step == 9 %}
                     <div class="container-background mb-5 p-4">
                         <div class='f-20 text-center font-weight-bold'>Rapport d'intervention</div>
