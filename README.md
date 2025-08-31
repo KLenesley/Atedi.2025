@@ -1,5 +1,6 @@
 # ATEDI
 
+> **A**ssistance **T**echnique **E**t **D**épannage **I**nformatique (ATEDI)
 
 
 
@@ -10,6 +11,9 @@ Open your CMD and copy this line :
 git clone https://github.com/ndlaprovidence/Atedi.git
 ```
 
+
+
+
 ## Install
 
 When download is complete, open your CMD 
@@ -18,7 +22,10 @@ and execute these commands :
 cd atedi
 composer install
 ```
-(Composer is free to download at this link : https://getcomposer.org/download/)
+
+> Composer is free to download at this link : https://getcomposer.org/download/
+
+
 
 
 
@@ -29,19 +36,20 @@ Start a DBMS like MariaDB via Ddev or WAMP
 
 
 
-### Ddev
-
+### Option 1 - Ddev
+ 
 ```sh
 ddev config
 ```
 
+> Ddev is free to download at this link : https://ddev.com/
 
 
 
 
-### WAMP 
+### Option 2 - WAMP 
 
-MariaDB is included into WAMP server (free to download at this link : http://www.wampserver.com/)
+MariaDB is included into WAMP server
 
 Then copy .env file to .env.local 
 and update .env.local tu configure your database :
@@ -59,6 +67,12 @@ Finaly, execute this line :
 ```sh
 php bin/console doctrine:database:create
 ```
+
+> WAMP is free to download at this link : http://www.wampserver.com/
+
+
+
+
 
 
 
@@ -87,8 +101,6 @@ Once you've installed everything, execute this line in the atedi directory :
 ddev start
 ```
 
-and open URL `http://atedi.2024.ddev.site/login` with your browser.
-
 or
 
 ```sh
@@ -101,7 +113,14 @@ or
 symfony server:start
 ```
 
-You can access to your local server with localhost:8000
+You can access to your local server with your browser at : 
+- `http://localhost:8000` 
+  
+or
+
+- `http://atedi.2024.ddev.site/login` .
+
+
 
 
 
