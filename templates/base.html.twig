@@ -22,7 +22,7 @@
             <a class="navbar-brand font-weight-bold" href="{{ path('index') }}">ATEDI</a>
 
             <div class="collapse navbar-collapse">
-                
+
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item {% if app.request.get('_route') starts with 'index' %} active {% endif %} px-4">
                         <a class="nav-link" href="/">Accueil</a>
@@ -34,12 +34,12 @@
                         <a class="nav-link" href="{{ path('client_index') }}">Clients</a>
                     </li>
 
-                    <li class="nav-item dropdown 
-                        {% if (app.request.get('_route') starts with 'equipment') 
-                            or (app.request.get('_route') starts with 'operating_system') 
-                            or (app.request.get('_route') starts with 'task') 
-                            or (app.request.get('_route') starts with 'technician') 
-                            or (app.request.get('_route') starts with 'user') 
+                    <li class="nav-item dropdown
+                        {% if (app.request.get('_route') starts with 'equipment')
+                            or (app.request.get('_route') starts with 'operating_system')
+                            or (app.request.get('_route') starts with 'task')
+                            or (app.request.get('_route') starts with 'technician')
+                            or (app.request.get('_route') starts with 'user')
                         %} active {% endif %} px-4">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Outils</a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -63,8 +63,8 @@
                         <a class="nav-link" href="{{ path('app_logout') }}"><i class="fas fa-sign-out-alt"></i></a>
                     </li>
                 </ul>
-                
-            </div> 
+
+            </div>
         </nav>
 
     {% endif %}
@@ -84,8 +84,8 @@
                             <p>ATEDI (<b>A</b>ssistance <b>T</b>echnique <b>E</b>t <b>D</b>épannage <b>I</b>nformatique) est un logiciel libre sous licence <a href='https://cecill.info/' target="_blank"><u>CeCILL</u></a>.</p>
                             <p>Son but est de faciliter la gestion des interventions techniques sur du matériel informatique.</p>
                             <p></p>
-                                
-                                                
+
+
                             <hr>
                             <h5>Logiciel développé par des étudiants en BTS SIO</h5>
                             <p>au lycée NDLP d'Avranches : </p>
@@ -101,7 +101,7 @@
                             <p>Et bien évidemment à <a href='https://github.com/symfony/symfony/' target="_blank"><u>Symfony</u></a> sans quoi ce projet n'aurait pas été possible !</p>
                             <hr>
                             <h5>Version</h5>
-                            <p>2.0.0</p>
+                            <p>2.0.1 (PHP 8 et Symfony 7.3)</p>
                         </div>
                     </div>
                 </div>
@@ -127,7 +127,7 @@
             {% endif %}
 
         </main>
-        
+
     </body>
 </html>
 

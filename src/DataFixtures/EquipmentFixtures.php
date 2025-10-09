@@ -9,7 +9,7 @@ use App\Entity\Equipment;
 
 class EquipmentFixtures extends Fixture
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager):void
     {
         $data = new Equipment();
         $data->setTitle('PC Portable');

@@ -115,7 +115,7 @@ class InterventionController extends AbstractController
                     case "En cours":
                         $intervention->getInterventionReport()->setStep(1);
                         $intervention->setStatus($newStatus);
-                        if ( $theStatus == "Terminée" ) {
+                        if ( $theStatus === "Terminée" ) {
                             $intervention->setReturnDate(null);
                         }
                     break;
@@ -152,7 +152,7 @@ class InterventionController extends AbstractController
                                 }
 
                                 // 3) Création de la facture dans Dolibarr                                                
-                                if (sizeof($dolibarrLignesFacture) > 0) {
+                                if (count($dolibarrLignesFacture) > 0) {
                                     /// $this->addFlash('info', "Création de la facture dans Dolibarr...");
                                     $dolibarrFactureId = $dolibarrHelper->getDolibarrFactureId($intervention, $dolibarrClientId, $dolibarrLignesFacture);
                                     if (isset($dolibarrFactureId)) {
@@ -289,9 +289,7 @@ class InterventionController extends AbstractController
     
                         // Retrieve the HTML generated in our twig file
                         $html = $this->renderView('intervention/both_pdf.html.twig', [
-                            'intervention' => $intervention,
                             'softwares' => $softwares,
-                            'actions' => $actions,
                             'booklets' => $booklets,
                             'technicians' => $technicians,
                             'intervention' => $intervention,
@@ -343,7 +341,6 @@ class InterventionController extends AbstractController
                     return $this->redirectToRoute('intervention_report', [
                         'id' => $intervention->getId(),
                     ]);
-                    break;
 
                 case "previous":
                     if($step > 1){
@@ -354,7 +351,6 @@ class InterventionController extends AbstractController
                     return $this->redirectToRoute('intervention_report', [
                         'id' => $intervention->getId(),
                     ]);
-                    break;
                 
                 case "restart":
                     $interventionReport->setStep(1);
@@ -364,7 +360,6 @@ class InterventionController extends AbstractController
                     return $this->redirectToRoute('intervention_report', [
                         'id' => $intervention->getId(),
                     ]);
-                    break;
             }
         } 
             

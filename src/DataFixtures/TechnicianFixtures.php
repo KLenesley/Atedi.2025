@@ -9,7 +9,7 @@ use App\Entity\Technician;
 
 class TechnicianFixtures extends Fixture
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager):void
     {
         $data = new Technician();
         $data->setLastName('DORIAUX');

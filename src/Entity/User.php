@@ -8,12 +8,12 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: "tbl_user")]
 #[UniqueEntity(fields: ["email"], message: "Il existe déjà un utilisateur avec cet email")]
-class User implements UserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -86,6 +86,16 @@ class User implements UserInterface
     }
 
     /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    /**
      * @see UserInterface
      */
     public function getRoles(): array
@@ -109,7 +119,7 @@ class User implements UserInterface
      */
     public function getPassword(): string
     {
-        return (string) $this->password;
+        return $this->password;
     }
 
     public function setPassword(string $password): self
@@ -127,14 +137,12 @@ class User implements UserInterface
         // not needed when using the "bcrypt" algorithm in security.yaml
     }
 
-    /**
-     * @see UserInterface
-     */
-    public function eraseCredentials()
+    #[\Deprecated]
+    public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+        // @deprecated, to be removed when upgrading to Symfony 8
     }
+
 
     /**
      * @return Collection<int, intervention>
@@ -156,11 +164,9 @@ class User implements UserInterface
 
     public function removeIntervention(Intervention $intervention): static
     {
-        if ($this->intervention->removeElement($intervention)) {
-            // set the owning side to null (unless already changed)
-            if ($intervention->getUser() === $this) {
-                $intervention->setUser(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->intervention->removeElement($intervention) && $intervention->getUser() === $this) {
+            $intervention->setUser(null);
         }
 
         return $this;

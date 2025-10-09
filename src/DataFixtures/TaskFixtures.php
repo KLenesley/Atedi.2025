@@ -9,7 +9,7 @@ use App\Entity\Task;
 
 class TaskFixtures extends Fixture
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager):void
     {
         $data = new Task();
         $data->setTitle('Réparation');

@@ -9,7 +9,7 @@ use App\Entity\Prop;
 
 class PropFixtures extends Fixture
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager):void
     {
         $data = new Prop();
         $data->setTitle('Sacoche');

@@ -16,6 +16,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('/task')]
 class TaskController extends AbstractController
 {
+    public $atediHelper;
+    public $em;
     public function __construct(AtediHelper $AtediHelper)
     {
         $this->atediHelper = $AtediHelper;

@@ -28,7 +28,7 @@ class DolibarrHelper
         $this->httpClient = HttpClient::create();
 
         $this->DOLIBARR_URL = $params->get('DOLIBARR_URL');
-        if (substr($this->DOLIBARR_URL, -1) != '/') {
+        if (substr($this->DOLIBARR_URL, -1) !== '/') {
             $this->DOLIBARR_URL .= '/';
         }
         $this->DOLIBARR_APIKEY = $params->get('DOLIBARR_APIKEY');
@@ -113,11 +113,7 @@ class DolibarrHelper
     {
         $dolibarrProductId = null;
 
-        if ($type == 'service') {
-            $type = 1;
-        } else {
-            $type = 0;
-        }
+        $type = $type == 'service' ? 1 : 0;
 
         try {
             $product_name = $product->getTitle();
@@ -134,7 +130,7 @@ class DolibarrHelper
             $content = $response->getContent();
             $content_decode = json_decode($content);
 
-            if ($statusCode != 404 & sizeof($content_decode) != 0) {
+            if (($statusCode != 404 & count($content_decode) !== 0) !== 0) {
 
                 // Afficher l'entête de la réponse
                 $contentType = $response->getHeaders()['content-type'][0];
