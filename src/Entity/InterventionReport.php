@@ -7,7 +7,6 @@ use App\Entity\Booklet;
 use App\Entity\Technician;
 use App\Entity\Intervention;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\InterventionReport;
 use App\Entity\SoftwareInterventionReport;
 use Doctrine\Common\Collections\Collection;
 use App\Repository\InterventionReportRepository;
