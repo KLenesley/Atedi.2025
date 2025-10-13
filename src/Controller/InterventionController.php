@@ -30,10 +30,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class InterventionController extends AbstractController
 {
     private $atediHelper;
+    private $dolibarrHelper;
 
-    public function __construct(AtediHelper $atediHelper)
+    public function __construct(AtediHelper $atediHelper, DolibarrHelper $dolibarrHelper)
     {
         $this->atediHelper = $atediHelper;
+        $this->dolibarrHelper = $dolibarrHelper;
     }
 
     #[Route("/", name: "intervention_index", methods: ["GET"])]
@@ -95,7 +97,7 @@ class InterventionController extends AbstractController
     }
 
     #[Route("/{id}", name: "intervention_show", methods: ["GET","POST"])]
-    public function show(Request $request, Intervention $intervention, EntityManagerInterface $em, SoftwareRepository $sr, ActionRepository $ar, SoftwareInterventionReportRepository $sirr, BillingLineRepository $blr, DolibarrHelper $dolibarrHelper): Response
+    public function show(Request $request, Intervention $intervention, EntityManagerInterface $em, SoftwareRepository $sr, ActionRepository $ar, SoftwareInterventionReportRepository $sirr, BillingLineRepository $blr): Response
     {
         // $em = $em;
         $theStatus = $intervention->getStatus();
@@ -121,20 +123,20 @@ class InterventionController extends AbstractController
                     break;
 
                     case "Terminée":
-                        if ( $intervention->getInterventionReport()->getStep() == 9 && $intervention->getReturnDate() ) {                           
+                        if ( $intervention->getInterventionReport()->getStep() == 9 && $intervention->getReturnDate() ) {
                             $intervention->setStatus($newStatus);
                             $em->persist($intervention);
                             $em->flush();
                             // 1) Recherche/création du client dans Dolibarr
-                            $dolibarrClientId = $dolibarrHelper->getDolibarrClientId($intervention->getClient());
+                            $dolibarrClientId = $this->dolibarrHelper->getDolibarrClientId($intervention->getClient());
                             if (isset($dolibarrClientId)) {
                                  $this->addFlash('success', "L'ID du client '" . $intervention->getClient()->getLastName() . "' est : '" . $dolibarrClientId . "'");
-                                
+
                                 // 2) Recherche/création du (ou des) service(s) dans Dolibarr
                                 $dolibarrProductServiceId = null;
                                 $dolibarrLignesFacture = array();;
                                 foreach ($intervention->getTasks() as $task) {
-                                    $dolibarrProductServiceId = $dolibarrHelper->getDolibarrProductServiceId($task, 'service');
+                                    $dolibarrProductServiceId = $this->dolibarrHelper->getDolibarrProductServiceId($task, 'service');
                                     if (isset($dolibarrProductServiceId)) {
                                         $dolibarrLignesFacture[$dolibarrProductServiceId] = $task;
                                         $this->addFlash('success', "L'ID du service '" . $task->getTitle() . "' est : '" . $dolibarrProductServiceId . "'");
@@ -151,10 +153,10 @@ class InterventionController extends AbstractController
                                     $dolibarrLignesFacture[$i] = $billingLine;
                                 }
 
-                                // 3) Création de la facture dans Dolibarr                                                
+                                // 3) Création de la facture dans Dolibarr
                                 if (count($dolibarrLignesFacture) > 0) {
                                     /// $this->addFlash('info', "Création de la facture dans Dolibarr...");
-                                    $dolibarrFactureId = $dolibarrHelper->getDolibarrFactureId($intervention, $dolibarrClientId, $dolibarrLignesFacture);
+                                    $dolibarrFactureId = $this->dolibarrHelper->getDolibarrFactureId($intervention, $dolibarrClientId, $dolibarrLignesFacture);
                                     if (isset($dolibarrFactureId)) {
                                         $this->addFlash('success', "La facture (PROV" . $dolibarrFactureId . ") a été créée dans Dolibarr.");
                                     } else {
@@ -167,11 +169,11 @@ class InterventionController extends AbstractController
                             }
 
                             // @todo à remettre
-                            return $this->redirectToRoute('index');                        
+                            return $this->redirectToRoute('index');
                         }
                         break;
                 }
-        
+
                 $em->persist($intervention);
                 $em->flush();
             }
@@ -180,9 +182,9 @@ class InterventionController extends AbstractController
         if ($request->request->has('return-date')) {
             $returnDate = $request->request->get('return-date');
             $intervention->setReturnDate(new \DateTime());
-        
+
             $em->persist($intervention);
-            $em->flush();  
+            $em->flush();
         }
 
         if ($request->request->has('download')) {
@@ -266,27 +268,27 @@ class InterventionController extends AbstractController
                     case "both":
                         $cleaningSoftwares = $sr->findAllByType('Nettoyage');
                         $actions = $ar->findAll();
-    
+
                         // Configure Dompdf according to your needs
                         $pdfOptions = new Options();
                         $pdfOptions->set('defaultFont', 'Arial');
-    
+
                         // Instantiate Dompdf with our options
                         $dompdf = new Dompdf($pdfOptions);
-    
+
                         $interventionReportId = $intervention->getInterventionReport()->getId();
                         $softwares = $sirr->findAllByReport($interventionReportId);
                         $actions = $intervention->getInterventionReport()->getActions();
                         $booklets = $intervention->getInterventionReport()->getBooklets();
                         $technicians = $intervention->getInterventionReport()->getTechnicians();
-    
+
                         // Configure Dompdf according to your needs
                         $pdfOptions = new Options();
                         $pdfOptions->set('defaultFont', 'Arial');
-    
+
                         // Instantiate Dompdf with our options
                         $dompdf = new Dompdf($pdfOptions);
-    
+
                         // Retrieve the HTML generated in our twig file
                         $html = $this->renderView('intervention/both_pdf.html.twig', [
                             'softwares' => $softwares,
@@ -296,16 +298,16 @@ class InterventionController extends AbstractController
                             'cleaningSoftwares' => $cleaningSoftwares,
                             'actions' => $actions,
                         ]);
-    
+
                         // Load HTML to Dompdf
                         $dompdf->loadHtml($html);
-    
+
                         // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
                         $dompdf->setPaper('A4', 'portrait');
-    
+
                         // Render the HTML as PDF
                         $dompdf->render();
-    
+
                         $pdfName = $intervention->getClient()->getLastName().'-DEMANDE_RAPPORT-'.time().'.pdf';
                         // Output the generated PDF to Browser (force download)
                         $dompdf->stream($pdfName, [
@@ -327,7 +329,7 @@ class InterventionController extends AbstractController
 
         $interventionReport = $intervention->getInterventionReport();
         $step = $interventionReport->getStep();
-        
+
         if ($request->query->has('step')) {
 
             $setup = $request->query->get('step');
@@ -337,7 +339,7 @@ class InterventionController extends AbstractController
                     $interventionReport->setStep($step+1);
                     $em->persist($interventionReport);
                     $em->flush();
-        
+
                     return $this->redirectToRoute('intervention_report', [
                         'id' => $intervention->getId(),
                     ]);
@@ -351,18 +353,18 @@ class InterventionController extends AbstractController
                     return $this->redirectToRoute('intervention_report', [
                         'id' => $intervention->getId(),
                     ]);
-                
+
                 case "restart":
                     $interventionReport->setStep(1);
                     $em->persist($interventionReport);
                     $em->flush();
-        
+
                     return $this->redirectToRoute('intervention_report', [
                         'id' => $intervention->getId(),
                     ]);
             }
-        } 
-            
+        }
+
         $softwares = [];
         $booklets = $br->findAll();
         $actions = $ar->findAll();
@@ -418,7 +420,7 @@ class InterventionController extends AbstractController
 
                         $cleaningSoftwares = $request->request->get('cleaning-software');
                         foreach ( $cleaningSoftwares as $softwareId ) {
-                        
+
                             $software = $sr->findOneById($softwareId);
                             $softwareOperation = new SoftwareInterventionReport();
                             $softwareOperation->setSoftware($software);
@@ -437,7 +439,7 @@ class InterventionController extends AbstractController
                         $internalAnalysis = $request->request->get('internal-analysis');
                         $interventionReport->setInternalAnalysis($internalAnalysis);
                     }
-                    
+
                     $severity = $request->request->get('severity');
                     $interventionReport->setSeverity($severity);
                     $interventionReport->setStep($step+1);
@@ -502,7 +504,7 @@ class InterventionController extends AbstractController
                     $parametersLength = count($parametersList);
 
                     $parametersKeys = array_keys($parametersList);
-                    
+
                     for ($i = 0; $i < $parametersLength; $i++) {
                         $parameter = explode("-", $parametersKeys[$i]);
                         $softwareId = $parameter[1];
@@ -553,8 +555,8 @@ class InterventionController extends AbstractController
                 }
                 break;
 
-            case 6:            
-                
+            case 6:
+
                 $interventionReport->setDiskState(NULL);
                 $interventionReport->setUptime(NULL);
                 $interventionReport->setBatteryDegradation(NULL);
@@ -565,26 +567,26 @@ class InterventionController extends AbstractController
                         $diskState = $request->request->get('disk-state');
                         $interventionReport->setDiskState($diskState);
                     }
-            
+
                     if ($request->request->has('uptime')) {
                         $uptime = $request->request->get('uptime');
                         $interventionReport->setUptime($uptime);
                     }
-            
+
                     if ($request->request->has('battery-degradation')) {
                         $batteryDegradation = $request->request->get('battery-degradation');
                         $interventionReport->setBatteryDegradation($batteryDegradation);
                     }
-            
+
                     $interventionReport->setStep($step+1);
                     $em->persist($interventionReport);
                     $em->flush();
-            
+
                     return $this->redirectToRoute('intervention_report', [
                         'id' => $intervention->getId(),
                     ]);
                 }
-                break;                
+                break;
 
             case 7:
                 $irBooklets = $interventionReport->getBooklets();
@@ -633,7 +635,7 @@ class InterventionController extends AbstractController
                     ]);
                 }
                 break;
-            
+
             case 9:
                 if ($request->request->has('delete-billing-line')) {
                     $billingLineId = $request->request->get('billing-line-id');
@@ -651,11 +653,11 @@ class InterventionController extends AbstractController
                         'id' => $intervention->getId(),
                     ]);
                 }
-                
+
                 if ($billingLineForm->isSubmitted() && $billingLineForm->isValid()) {
 
                     // $em = $em;
-        
+
                     $billingLine->setIntervention($intervention);
                     $em->persist($billingLine);
                     $em->flush();
@@ -712,7 +714,7 @@ class InterventionController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$intervention->getId(), $request->request->get('_token'))) {
 
             $billingLines = $blr->findAllByIntervention($intervention);
-            
+
             foreach ($billingLines as $billingLine) {
                 $em->remove($billingLine);
             }
