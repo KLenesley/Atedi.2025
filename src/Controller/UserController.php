@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\UserType;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,10 +29,10 @@ class UserController extends AbstractController
     }
 
     #[Route("/register", name: "user_register")]
-    public function register(Request $request, UserPasswordHasherInterface $passwordEncoder, Security $security): Response
+    public function register(Request $request, UserPasswordHasherInterface $passwordEncoder, EntityManagerInterface $em): Response
     {
         // Récupération de l'utilisateur actuellement authentifié
-        $currentUser = $security->getUser();
+        $currentUser = $this->getUser();
 
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -43,9 +44,8 @@ class UserController extends AbstractController
             $user->setPassword($encodedPassword);
 
             // Persistez l'utilisateur dans la base de données
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($user);
-            $entityManager->flush();
+            $em->persist($user);
+            $em->flush();
 
             // Reconnecter l'utilisateur initialement authentifié
             $this->get('security.token_storage')->setToken(null);
@@ -70,12 +70,11 @@ class UserController extends AbstractController
     }
 
     #[Route("/{id}", name: "user_delete", methods: ["DELETE"])]
-    public function delete(Request $request, User $user): Response
+    public function delete(Request $request, User $user, EntityManagerInterface $em): Response
     {
         if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($user);
-            $entityManager->flush();
+            $em->remove($user);
+            $em->flush();
         }
 
         return $this->redirectToRoute('user_index');

@@ -5,10 +5,11 @@ namespace App\Controller;
 use App\Entity\Action;
 use App\Form\ActionType;
 use App\Repository\ActionRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/action')]
 class ActionController extends AbstractController
@@ -22,16 +23,15 @@ class ActionController extends AbstractController
     }
 
     #[Route("/new", name: "action_new", methods: ["GET","POST"])]
-    public function new(Request $request): Response
+    public function new(Request $request, EntityManagerInterface $em): Response
     {
         $action = new Action();
         $form = $this->createForm(ActionType::class, $action);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($action);
-            $entityManager->flush();
+            $em->persist($action);
+            $em->flush();
 
             if ( $request->query->has('s') == 'report') {
                 return $this->redirectToRoute('intervention_report', [
@@ -49,13 +49,13 @@ class ActionController extends AbstractController
     }
 
     #[Route("/{id}/edit", name: "action_edit", methods: ["GET","POST"])]
-    public function edit(Request $request, Action $action): Response
+    public function edit(Request $request, Action $action, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(ActionType::class, $action);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $em->flush();
 
             return $this->redirectToRoute('action_index');
         }
@@ -67,12 +67,11 @@ class ActionController extends AbstractController
     }
 
     #[Route("/{id}", name: "action_delete", methods: ["DELETE"])]
-    public function delete(Request $request, Action $action): Response
+    public function delete(Request $request, Action $action, EntityManagerInterface $em): Response
     {
         if ($this->isCsrfTokenValid('delete'.$action->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($action);
-            $entityManager->flush();
+            $em->remove($action);
+            $em->flush();
         }
 
         return $this->redirectToRoute('action_index');

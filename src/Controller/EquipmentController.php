@@ -23,21 +23,20 @@ class EquipmentController extends AbstractController
     }
 
     #[Route("/new", name: "equipment_new", methods: ["GET","POST"])]
-    public function new(Request $request): Response
+    public function new(Request $request, EntityManagerInterface $em): Response
     {
         $equipment = new Equipment();
         $form = $this->createForm(EquipmentType::class, $equipment);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($equipment);
-            $entityManager->flush();
+            $em->persist($equipment);
+            $em->flush();
 
             if ( $request->query->has('s') == 'intervention') {
                 return $this->redirectToRoute('intervention_new');
             }
-            
+
             return $this->redirectToRoute('equipment_show', [
                 'id' => $equipment->getId(),
             ]);
@@ -61,13 +60,13 @@ class EquipmentController extends AbstractController
     }
 
     #[Route("/{id}/edit", name: "equipment_edit", methods: ["GET","POST"])]
-    public function edit(Request $request, Equipment $equipment): Response
+    public function edit(Request $request, Equipment $equipment, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(EquipmentType::class, $equipment);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $em->flush();
 
             return $this->redirectToRoute('equipment_show', [
                 'id' => $equipment->getId(),
@@ -81,12 +80,11 @@ class EquipmentController extends AbstractController
     }
 
     #[Route("/{id}", name: "equipment_delete", methods: ["DELETE"])]
-    public function delete(Request $request, Equipment $equipment): Response
+    public function delete(Request $request, Equipment $equipment, EntityManagerInterface $em): Response
     {
         if ($this->isCsrfTokenValid('delete'.$equipment->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($equipment);
-            $entityManager->flush();
+            $em->remove($equipment);
+            $em->flush();
         }
 
         return $this->redirectToRoute('equipment_index');
