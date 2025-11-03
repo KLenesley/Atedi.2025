@@ -48,18 +48,18 @@ class UserController extends AbstractController
             $em->flush();
 
             // Reconnecter l'utilisateur initialement authentifié
-            $this->get('security.token_storage')->setToken(null);
+            // $this->get('security.token_storage')->setToken(null);
 
             // Redirigez ici après la création du compte
             // (par exemple, vers une page de confirmation)
             $this->addFlash('success', 'Compte créé avec succès.');
 
-            // Rétablir l'utilisateur connecté précédemment
-            if ($currentUser instanceof \Symfony\Component\Security\Core\User\UserInterface) {
-                $token = new UsernamePasswordToken($currentUser, null, 'main', $currentUser->getRoles());
-                $this->get('security.token_storage')->setToken($token);
-                $this->get('session')->set('_security_main', serialize($token));
-            }
+            // // Rétablir l'utilisateur connecté précédemment
+            // if ($currentUser instanceof \Symfony\Component\Security\Core\User\UserInterface) {
+            //     $token = new UsernamePasswordToken($currentUser, null, 'main', $currentUser->getRoles());
+            //     $this->get('security.token_storage')->setToken($token);
+            //     $this->get('session')->set('_security_main', serialize($token));
+            // }
 
             return $this->redirectToRoute('user_index'); // Redirection vers la page d'accueil ou autre
         }
