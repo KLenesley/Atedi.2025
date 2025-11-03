@@ -49,7 +49,6 @@ class InterventionController extends AbstractController
     #[Route("/new", name: "intervention_new", methods: ["GET","POST"])]
     public function new(Request $request, ClientRepository $cr, EntityManagerInterface $em): Response
     {
-        // $em = $em;
 
         $intervention = new Intervention();
         $interventionReport = new InterventionReport();
@@ -382,15 +381,18 @@ class InterventionController extends AbstractController
                 $em->flush();
 
                 if ($request->request->has('data')) {
-
-                    if ($request->request->has('technicians')) {
-                        $technicians = $request->request->get('technicians');
-
-                        foreach ( $technicians as $technician ) {
-                            $technician = $tr->findOneById($technician);
+                    $data = $request->request->all();
+                    if (isset($data['technicians'])) {
+                        $techniciansID = $data['technicians'];
+                        for ($i=0; $i < count($techniciansID); $i++) {
+                            $technician = $tr->findOneById($techniciansID[$i]);
                             $interventionReport->addTechnician($technician);
                             $em->persist($interventionReport);
                         }
+                    }
+
+                    if (empty($techniciansID)) {
+                        $this->addFlash('warning', "Il n'y a pas de technicien pour cette intervention.");
                     }
 
                     $interventionReport->setStep($step+1);
@@ -415,13 +417,11 @@ class InterventionController extends AbstractController
                 $softwares = $sr->findAllByType('Nettoyage');
 
                 if ($request->request->has('data')) {
-
-                    if ($request->request->has('cleaning-software')) {
-
-                        $cleaningSoftwares = $request->request->get('cleaning-software');
-                        foreach ( $cleaningSoftwares as $softwareId ) {
-
-                            $software = $sr->findOneById($softwareId);
+                    $data = $request->request->all();
+                    if (isset($data['cleaning-software'])) {
+                        $cleaningSoftwaresID = $data['cleaning-software'];
+                        for ($i=0; $i < count($cleaningSoftwaresID); $i++) {
+                            $software = $sr->findOneById($cleaningSoftwaresID[$i]);
                             $softwareOperation = new SoftwareInterventionReport();
                             $softwareOperation->setSoftware($software);
                             $softwareOperation->setInterventionReport($interventionReport);
@@ -429,6 +429,18 @@ class InterventionController extends AbstractController
                             $em->persist($softwareOperation);
                         }
                     }
+
+                    // if ($request->request->has('cleaning-software')) {
+                    //     $cleaningSoftwares = $request->request->get('cleaning-software');
+                    //     foreach ( $cleaningSoftwares as $softwareId ) {
+                    //         $software = $sr->findOneById($softwareId);
+                    //         $softwareOperation = new SoftwareInterventionReport();
+                    //         $softwareOperation->setSoftware($software);
+                    //         $softwareOperation->setInterventionReport($interventionReport);
+                    //         $softwareOperation->setAction('Nettoyage');
+                    //         $em->persist($softwareOperation);
+                    //     }
+                    // }
 
                     if ($request->request->has('severity-problem')) {
                         $severityProblems = $request->request->get('severity-problem');
@@ -461,15 +473,24 @@ class InterventionController extends AbstractController
 
                 if ($request->request->has('data')) {
 
-                    if ($request->request->has('actions')) {
-                        $actions = $request->request->get('actions');
-
-                        foreach ( $actions as $action ) {
-                            $action = $ar->findOneById($action);
+                    $data = $request->request->all();
+                    if (isset($data['actions'])) {
+                        $actionsID = $data['actions'];
+                        for ($i=0; $i < count($actionsID); $i++) {
+                            $action = $ar->findOneById($actionsID[$i]);
                             $interventionReport->addAction($action);
                             $em->persist($interventionReport);
                         }
                     }
+
+                    // if ($request->request->has('actions')) {
+                    //     $actions = $request->request->get('actions');
+                    //     foreach ( $actions as $action ) {
+                    //         $action = $ar->findOneById($action);
+                    //         $interventionReport->addAction($action);
+                    //         $em->persist($interventionReport);
+                    //     }
+                    // }
 
                     $interventionReport->setStep($step+1);
                     $em->persist($interventionReport);
@@ -597,15 +618,25 @@ class InterventionController extends AbstractController
 
                 if ($request->request->has('data')) {
 
-                    if ($request->request->has('booklets')) {
-                        $booklets = $request->request->get('booklets');
-
-                        foreach ( $booklets as $booklet ) {
-                            $booklet = $br->findOneById($booklet);
+                    $data = $request->request->all();
+                    if (isset($data['booklets'])) {
+                        $bookletsID = $data['booklets'];
+                        for ($i=0; $i < count($bookletsID); $i++) {
+                            $booklet = $br->findOneById($bookletsID[$i]);
                             $interventionReport->addBooklet($booklet);
                             $em->persist($interventionReport);
                         }
                     }
+
+                    // if ($request->request->has('booklets')) {
+                    //     $booklets = $request->request->get('booklets');
+                    //     foreach ( $booklets as $booklet ) {
+                    //         $booklet = $br->findOneById($booklet);
+                    //         $interventionReport->addBooklet($booklet);
+                    //         $em->persist($interventionReport);
+                    //     }
+                    // }
+
                     $interventionReport->setStep($step+1);
                     $em->persist($interventionReport);
                     $em->flush();
@@ -685,7 +716,7 @@ class InterventionController extends AbstractController
     }
 
     #[Route("/{id}/edit", name: "intervention_edit", methods: ["GET","POST"])]
-    public function edit(Request $request, Intervention $intervention): Response
+    public function edit(Request $request, Intervention $intervention, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(InterventionType::class, $intervention);
         $form->handleRequest($request);
@@ -695,7 +726,7 @@ class InterventionController extends AbstractController
             $totalPrice = $this->atediHelper->strTotalPrice($intervention);
 
             $intervention->setTotalPrice($totalPrice);
-            $this->getDoctrine()->getManager()->flush();
+            $em->flush();
 
             return $this->redirectToRoute('intervention_show', [
                 'id' => $intervention->getId(),
@@ -719,7 +750,6 @@ class InterventionController extends AbstractController
                 $em->remove($billingLine);
             }
 
-            $em = $this->getDoctrine()->getManager();
             $em->remove($intervention);
             $em->flush();
         }
