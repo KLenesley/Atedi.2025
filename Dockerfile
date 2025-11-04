@@ -1,16 +1,29 @@
-FROM php:7.4.11-fpm-alpine3.12
+FROM php:8.3-fpm
 
-RUN docker-php-ext-install pdo pdo_mysql
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    libzip-dev \
+    netcat \
+    && docker-php-ext-install pdo pdo_mysql zip bcmath intl gd
 
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+WORKDIR /var/www
+COPY . .
 
-# mysql server name 
-# docker.for.win.localhost
-# host.docker.internal
+# Installe les dépendances (sans les dev pour la prod)
+RUN composer install --optimize-autoloader --no-dev
 
-# docker run -it -p 8888:8888 --rm --name atedi -v .:/var/www/atedi php:7.4.11-fpm sh
+COPY entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
+RUN chown -R www-data:www-data /var/www/var
 
-CMD [ "php", "-S 0.0.0.0:8888 -t public" ]
-
-EXPOSE 8888
+ENTRYPOINT ["entrypoint.sh"]
+CMD ["php-fpm"]
