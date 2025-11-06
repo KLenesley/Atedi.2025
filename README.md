@@ -48,7 +48,29 @@ ddev config
 
 
 
-### Option 2 - WAMP 
+### Option 2 - Docker
+
+1. Ajouter les variables suivantes dans le fichier .env.local : 
+```yml
+###> docker ###
+# Mettre les mêmes valeurs que dans DATABASE_URL
+DATABASE_NAME="atedi"
+DATABASE_USER="atedi"
+DATABASE_PASSWORD="!ChangeMe!"
+MARIADB_ROOT_PASSWORD="!ChangeMeRoot!"
+###< docker ###
+```
+> avec les bonnes valeurs.
+
+2. Lancer Docker
+```sh
+docker compose up -d
+```
+
+
+
+
+### Option 3 - WAMP 
 
 MariaDB is included into WAMP server
 
