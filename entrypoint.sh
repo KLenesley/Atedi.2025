@@ -1,24 +1,13 @@
 #!/bin/sh
-
 set -e
 
-# Attend que la base de données soit prête
-until nc -z -v -w30 db 3306
-do
-  echo "En attente de la base de données..."
-  sleep 1
-done
+echo "Attente MariaDB..."
+timeout 30s sh -c 'until nc -z db 3306 2>/dev/null; do echo "."; sleep 1; done' || (echo "DB KO" && exit 1)
+echo "DB OK !"
 
-# Exécute les migrations
-echo "Exécution des migrations..."
-php bin/console doctrine:migrations:migrate --no-interaction
+php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
 
-# Charge les fixtures
-echo "Chargement des fixtures..."
-php bin/console doctrine:fixtures:load --no-interaction
+php bin/console cache:warmup --no-debug
 
-# Lance les tests unitaires
-echo "Exécution des tests unitaires..."
-php bin/phpunit
-
-exec "$@"
+echo "Démarrage PHP-FPM en foreground..."
+exec php-fpm -F
