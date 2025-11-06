@@ -7,6 +7,12 @@ echo "DB OK !"
 
 php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
 
+# Exécute les fixtures UNIQUEMENT en environnement de développement
+if [ "$APP_ENV" = "dev" ]; then
+    echo "Chargement des fixtures de développement..."
+    php bin/console doctrine:fixtures:load --no-interaction
+fi
+
 php bin/console cache:warmup --no-debug
 
 echo "Démarrage PHP-FPM en foreground..."

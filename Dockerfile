@@ -25,7 +25,7 @@ WORKDIR /var/www
 COPY . .
 
 # Install des dépendances PHP (prod only)
-RUN composer install --optimize-autoloader --no-interaction
+RUN composer install --optimize-autoloader --no-interaction --no-scripts
 
 # Entrypoint
 COPY entrypoint.sh /usr/local/bin/

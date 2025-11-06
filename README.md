@@ -3,6 +3,10 @@
 > **A**ssistance **T**echnique **E**t **D**épannage **I**nformatique (ATEDI)
 
 
+## Configuration requise 
+
+- PHP 8.4
+
 
 
 ## Download
@@ -42,6 +46,15 @@ Start a DBMS like MariaDB via Ddev or WAMP
 ```sh
 ddev config
 ```
+
+```sh
+ddev start
+```
+
+ddev exec php bin/console cache:clear
+
+
+
 
 > Ddev is free to download at this link : https://ddev.com/
 
