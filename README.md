@@ -47,13 +47,20 @@ Start a DBMS like MariaDB via Ddev or WAMP
 ddev config
 ```
 
+
 ```sh
 ddev start
 ```
 
+
+```sh
+ddev exec APP_ENV=dev php bin/console doctrine:fixtures:load
+```
+
+
+```sh
 ddev exec php bin/console cache:clear
-
-
+```
 
 
 > Ddev is free to download at this link : https://ddev.com/
