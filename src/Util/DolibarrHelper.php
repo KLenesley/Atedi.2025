@@ -5,6 +5,7 @@ namespace App\Util;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Notifier\Notification\Notification;
+use App\Service\FlashMessageService;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class DolibarrHelper
@@ -16,7 +17,7 @@ class DolibarrHelper
     private $TAUX_TVA;
     private $notifier;
 
-    public function __construct(ParameterBagInterface $params, NotifierInterface $notifier)
+    public function __construct(ParameterBagInterface $params, private readonly FlashMessageService $flashMessageService)
     {
         ////////////////////////////////////////////////////////////////
         // @TODO à retirer
@@ -34,13 +35,6 @@ class DolibarrHelper
 
         $this->TAUX_TVA = $params->get('TAUX_TVA');
 
-        $this->notifier = $notifier;
-    }
-
-    private function notify(string $message, array $channels = ['email']): void
-    {
-        $notification = new Notification($message, $channels);
-        $this->notifier->send($notification);
     }
 
     public function getDolibarrClientId($client)
@@ -51,7 +45,7 @@ class DolibarrHelper
             $client_name = trim($client->getFirstName() . ' ' . $client->getLastName());
 
             $action = 'la recherche du client dans Dolibarr';
-            $this->notify("Recherche du client '" . $client_name . "' dans Dolibarr...");
+            $this->flashMessageService->addSuccess("Recherche du client '" . $client_name . "' dans Dolibarr...");
 
             // Exécuter la requête
             $response = $this->httpClient->request('GET', $this->DOLIBARR_URL . 'api/index.php/thirdparties?DOLAPIKEY=' . $this->DOLIBARR_APIKEY . '&sqlfilters=t.nom:=:\'' . $client_name . '\'&limit=1');
@@ -72,10 +66,10 @@ class DolibarrHelper
 
                 // ID du client
                 $dolibarrClientId = $content_decode[0]->id;
-                $this->notify("ID du client = " . $dolibarrClientId);
+                $this->flashMessageService->addSuccess("ID du client = " . $dolibarrClientId);
             } else {
                 $action = 'la création du client dans Dolibarr';
-                $this->notify("Le client '" . $client_name . "' n'a pas trouvé, ajout du client dans Dolibarr...");
+                $this->flashMessageService->addSuccess("Le client '" . $client_name . "' n'a pas trouvé, ajout du client dans Dolibarr...");
 
                 $response = $this->httpClient->request('POST', $this->DOLIBARR_URL . 'api/index.php/thirdparties?DOLAPIKEY=' . $this->DOLIBARR_APIKEY, [
                     'body' => [
@@ -93,14 +87,14 @@ class DolibarrHelper
 
                 // Afficher le code de retour
                 $statusCode = $response->getStatusCode();
-                $this->notify((string)$statusCode);
+                $this->flashMessageService->addSuccess((string)$statusCode);
 
                 // Afficher le contenu JSON de la réponse
                 $dolibarrClientId = $response->getContent();
-                $this->notify("ID du client qui vient d'être créé : " . $dolibarrClientId);
+                $this->flashMessageService->addSuccess("ID du client qui vient d'être créé : " . $dolibarrClientId);
             }
         } catch (\Throwable $th) {
-            $this->notify('Une erreur est intervenue lors de ' . $action, ['email']);
+            $this->flashMessageService->addSuccess('Une erreur est intervenue lors de ' . $action, ['email']);
         }
 
         return $dolibarrClientId;
@@ -116,7 +110,7 @@ class DolibarrHelper
             $product_name = $product->getTitle();
 
             $action = 'la recherche de la tâche dans Dolibarr';
-            $this->notify("Recherche du product '" . $product_name . "' dans Dolibarr...");
+            $this->flashMessageService->addSuccess("Recherche du product '" . $product_name . "' dans Dolibarr...");
 
             // Exécuter la requête
             $response = $this->httpClient->request('GET', $this->DOLIBARR_URL . 'api/index.php/products?DOLAPIKEY=' . $this->DOLIBARR_APIKEY . '&sqlfilters=t.label:=:\'' . 'Intervention - ' . $product_name . '\'&limit=1');
@@ -131,18 +125,18 @@ class DolibarrHelper
 
                 // Afficher le contenu JSON de la réponse
                 $content = $response->getContent();
-                $this->notify($content);
+                $this->flashMessageService->addSuccess($content);
 
                 // Afficher le contenu OBJET de la réponse
                 $content_decode = json_decode($content);
-                $this->notify(print_r($content_decode, true));
+                $this->flashMessageService->addSuccess(print_r($content_decode, true));
 
                 // ID du product
                 $dolibarrProductId = $content_decode[0]->id;
-                $this->notify("ID du product = " . $dolibarrProductId);
+                $this->flashMessageService->addSuccess("ID du product = " . $dolibarrProductId);
             } else {
                 $action = 'la création de la tâche dans Dolibarr';
-                $this->notify("Le product '" . $product_name . "' n'a pas trouvé, ajout du product dans Dolibarr...");
+                $this->flashMessageService->addSuccess("Le product '" . $product_name . "' n'a pas trouvé, ajout du product dans Dolibarr...");
 
                 $ref = 'ATEDI-' . str_pad($product->getId(), 3, "0", STR_PAD_LEFT);
                 $barcode = '999' . str_pad($product->getId(), 10, "0", STR_PAD_LEFT);
@@ -170,14 +164,14 @@ class DolibarrHelper
 
                 // Afficher le code de retour
                 $statusCode = $response->getStatusCode();
-                $this->notify((string)$statusCode);
+                $this->flashMessageService->addSuccess((string)$statusCode);
 
                 // Afficher le contenu JSON de la réponse
                 $dolibarrProductId = $response->getContent();
-                $this->notify("ID du product qui vient d'être créé : " . $dolibarrProductId);
+                $this->flashMessageService->addSuccess("ID du product qui vient d'être créé : " . $dolibarrProductId);
             }
         } catch (\Throwable $th) {
-            $this->notify('Une erreur est intervenue lors de ' . $action, ['email']);
+            $this->flashMessageService->addSuccess('Une erreur est intervenue lors de ' . $action, ['email']);
         }
 
         return $dolibarrProductId;
@@ -229,13 +223,13 @@ class DolibarrHelper
 
             // Afficher le code de retour
             $statusCode = $response->getStatusCode();
-            $this->notify((string)$statusCode);
+            $this->flashMessageService->addSuccess((string)$statusCode);
 
             // Afficher le contenu JSON de la réponse
             $dolibarrFactureId = $response->getContent();
 
         } catch (\Throwable $th) {
-            $this->notify('Une erreur est intervenue lors de la création de la facture dans Dolibarr', ['email']);
+            $this->flashMessageService->addSuccess('Une erreur est intervenue lors de la création de la facture dans Dolibarr', ['email']);
         }
 
         return $dolibarrFactureId;
