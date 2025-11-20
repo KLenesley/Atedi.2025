@@ -1,4 +1,9 @@
-<form method="post" action="{{ path('intervention_delete', {'id': intervention.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cette demande ?');" class='d-inline'>
+<form
+    method="delete"
+    action="{{ path('intervention_delete', {'id': intervention.id}) }}"
+    onsubmit="return confirm('Voulez-vous vraiment supprimer cette demande ?');"
+    class='d-inline'
+>
     <input type="hidden" name="_method" value="DELETE">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ intervention.id) }}">
     <button class="red-btn f-20 px-4 py-2">Supprimer</button>

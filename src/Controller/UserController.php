@@ -72,9 +72,15 @@ class UserController extends AbstractController
     #[Route("/delete/{id}", name: "user_delete", methods: ["POST"])]
     public function delete(Request $request, User $user, EntityManagerInterface $em): Response
     {
+        $this->addFlash('info', "Suppression de l'utilisateur n°" . $user->getId() . " en cours...");
+
         if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
             $em->remove($user);
             $em->flush();
+            $this->addFlash('success', "Suppression de l'utilisateur n°" . $user->getId() . " réussie.");
+        }
+        else {
+            $this->addFlash('error', "Échec de la suppression de l'utilisateur n°" . $user->getId() . ".");
         }
 
         return $this->redirectToRoute('user_index');
