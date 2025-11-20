@@ -34,7 +34,6 @@ class DolibarrHelper
         $this->DOLIBARR_APIKEY = $params->get('DOLIBARR_APIKEY');
 
         $this->TAUX_TVA = $params->get('TAUX_TVA');
-
     }
 
     public function getDolibarrClientId($client)
@@ -50,9 +49,16 @@ class DolibarrHelper
             // Exécuter la requête
             $response = $this->httpClient->request('GET', $this->DOLIBARR_URL . 'api/index.php/thirdparties?DOLAPIKEY=' . $this->DOLIBARR_APIKEY . '&sqlfilters=t.nom:=:\'' . $client_name . '\'&limit=1');
 
+            // Afficher la requête envoyée à Dolibarr
+            // $this->flashMessageService->addSuccess("Requête envoyée à Dolibarr : " . $this->DOLIBARR_URL . 'api/index.php/thirdparties?DOLAPIKEY=' . $this->DOLIBARR_APIKEY . '&sqlfilters=t.nom:=:\'' . $client_name . '\'&limit=1');
+
+            // Afficher la réponse complète de Dolibarr
+            // $this->flashMessageService->addSuccess("1) Réponse de Dolibarr '" . print_r($response, true));
+            // dump("1) Réponse de Dolibarr '" . print_r($response, true));
+
             // Afficher le code de retour
             $statusCode = $response->getStatusCode();
-            $action .= " -> statusCode = '".$statusCode."'";
+            $action .= " -> statusCode = '" . $statusCode . "'";
             if ($statusCode != 404) {
 
                 // Afficher l'entête de la réponse
@@ -87,7 +93,7 @@ class DolibarrHelper
 
                 // Afficher le code de retour
                 $statusCode = $response->getStatusCode();
-                $this->flashMessageService->addSuccess((string)$statusCode);
+                $this->flashMessageService->addSuccess("Code de retour : " . (string)$statusCode);
 
                 // Afficher le contenu JSON de la réponse
                 $dolibarrClientId = $response->getContent();
@@ -109,8 +115,8 @@ class DolibarrHelper
         try {
             $product_name = $product->getTitle();
 
-            $action = 'la recherche de la tâche dans Dolibarr';
-            $this->flashMessageService->addSuccess("Recherche du product '" . $product_name . "' dans Dolibarr...");
+            $action = 'la recherche du ' . ($type == 1 ? 'service' : 'produit') . ' dans Dolibarr';
+            $this->flashMessageService->addSuccess("Recherche du " . ($type == 1 ? 'service' : 'produit') . " '" . $product_name . "' dans Dolibarr...");
 
             // Exécuter la requête
             $response = $this->httpClient->request('GET', $this->DOLIBARR_URL . 'api/index.php/products?DOLAPIKEY=' . $this->DOLIBARR_APIKEY . '&sqlfilters=t.label:=:\'' . 'Intervention - ' . $product_name . '\'&limit=1');
@@ -135,8 +141,8 @@ class DolibarrHelper
                 $dolibarrProductId = $content_decode[0]->id;
                 $this->flashMessageService->addSuccess("ID du product = " . $dolibarrProductId);
             } else {
-                $action = 'la création de la tâche dans Dolibarr';
-                $this->flashMessageService->addSuccess("Le product '" . $product_name . "' n'a pas trouvé, ajout du product dans Dolibarr...");
+                $action = 'la création du ' . ($type == 1 ? 'service' : 'produit') . ' dans Dolibarr';
+                $this->flashMessageService->addSuccess("Le " . ($type == 1 ? 'service' : 'produit') . " '" . $product_name . "' n'a pas trouvé, ajout du " . ($type == 1 ? 'service' : 'produit') . " dans Dolibarr...");
 
                 $ref = 'ATEDI-' . str_pad($product->getId(), 3, "0", STR_PAD_LEFT);
                 $barcode = '999' . str_pad($product->getId(), 10, "0", STR_PAD_LEFT);
@@ -149,22 +155,30 @@ class DolibarrHelper
                         'ref' => $ref,
                         'label' => 'Intervention - ' . $product_name,
                         'description' => 'Intervention - ' . $product_name,
-                        'type' => $type,
+                        'fk_product_type' => $type,
                         'price' => $price,
                         'price_ttc' => $price_ttc,
                         'price_base_type' => 'TTC',
                         'pmp' => $price_ttc,
                         'tva_tx' => $tva_tx,
-                        'status' => 1,
-                        'status_buy' => 1,
-                        'barcode_type' => 2,
+                        'tosell' => 1,
+                        'tobuy' => 1,
+                        'tobatch' => 1,
+                        'fk_barcode_type' => 2,
                         'barcode' => $barcode,
                     ],
                 ]);
 
                 // Afficher le code de retour
                 $statusCode = $response->getStatusCode();
-                $this->flashMessageService->addSuccess((string)$statusCode);
+                $this->flashMessageService->addSuccess("Code de retour : " . (string)$statusCode);
+
+                // Afficher la requête envoyée à Dolibarr
+                // $this->flashMessageService->addSuccess("Requête envoyée à Dolibarr : " . $this->DOLIBARR_URL . 'api/index.php/products?DOLAPIKEY=' . $this->DOLIBARR_APIKEY);
+
+                // Afficher la réponse complète de Dolibarr
+                // $this->flashMessageService->addSuccess("2) Réponse de Dolibarr '" . print_r($response, true));
+                // dump("2) Réponse de Dolibarr '" . print_r($response, true));
 
                 // Afficher le contenu JSON de la réponse
                 $dolibarrProductId = $response->getContent();
@@ -195,16 +209,15 @@ class DolibarrHelper
                 if ($fk_product < 0) {
                     $fk_product = 0;
                     $note_public .= $value->getTitle() . "\n";
-                }
-                else {
+                } else {
                     $note_public .= "Intervention : " . $value->getTitle() . "\n";
                 }
                 $lignesfacture[] = [
-                        'desc' => $value->getTitle(),
-                        'subprice' => round($price, 2),
-                        'qty' => 1,
-                        'tva_tx' => $tva_tx,
-                        'fk_product' => $fk_product,
+                    'desc' => $value->getTitle(),
+                    'subprice' => round($price, 2),
+                    'qty' => 1,
+                    'tva_tx' => $tva_tx,
+                    'fk_product' => $fk_product,
                 ];
             }
             $note_private .= "Facture créée automatiquement par ATEDI" . "\n";
@@ -223,11 +236,10 @@ class DolibarrHelper
 
             // Afficher le code de retour
             $statusCode = $response->getStatusCode();
-            $this->flashMessageService->addSuccess((string)$statusCode);
+            $this->flashMessageService->addSuccess("Code de retour : " . (string)$statusCode);
 
             // Afficher le contenu JSON de la réponse
             $dolibarrFactureId = $response->getContent();
-
         } catch (\Throwable $th) {
             $this->flashMessageService->addSuccess('Une erreur est intervenue lors de la création de la facture dans Dolibarr', ['email']);
         }

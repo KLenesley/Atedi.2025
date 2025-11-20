@@ -167,7 +167,7 @@ class InterventionController extends AbstractController
                                 $this->addFlash('error', "Une erreur est intervenue, le client '" . $intervention->getClient()->getLastName() . "' n'a pas été trouvé/créé dans Dolibarr.");
                             }
 
-                            // @todo à remettre
+                            // @TODO à remettre
                             return $this->redirectToRoute('index');
                         }
                         break;
