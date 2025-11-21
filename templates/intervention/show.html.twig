@@ -2,7 +2,7 @@
 
 {% block title %}Gestion de la demande d'intervention{% endblock %}
 
-{% block javascripts %}        
+{% block javascripts %}
     <script src="{{ asset('assets/js/copyToClipboard.js') }}"></script>
     <script src="{{ asset('assets/js/colorFinder.js') }}"></script>
     <script src="{{ asset('assets/js/menuExpend.js') }}"></script>
@@ -10,7 +10,7 @@
 
 
 {% block body %}
-<div class='text-center'>	
+<div class='text-center'>
     <div class='h2 mb-3 font-weight-bold'>Gestion de la demande d'intervention n°{{ intervention.id }}</div>
     <a class="grey-btn f-20 px-4 py-2" href="{{ path('intervention_edit', {'id': intervention.id}) }}">Modifier</a>
     {{ include('intervention/_delete_form.html.twig') }}
@@ -104,7 +104,7 @@
                 {% if (intervention.status == 'En cours') and (intervention.interventionReport.step == 9) %}
                     <div class='row mb-2'>
                         <div class='col-md-auto my-auto'>
-                            <i class="fas fa-copy info-btn-75 fa-lg float-left" id='copyButton'>                                
+                            <i class="fas fa-copy info-btn-75 fa-lg float-left" id='copyButton'>
                                 <span class="info-btn-tooltip p-2" id="copyButtonTooltip">Copier</span>
                             </i>
                         </div>
@@ -144,13 +144,13 @@
                                 <div class='col-md-auto'>
                                     <div class="d-flex flex-column text-center">
                                         <div>Date de dépôt</div>
-                                        <div>{{ intervention.depositDate ? intervention.depositDate|date('d-m-Y') : "<div class='missing-info'>Non-renseignée</div>" }}</div>
+                                        <div>{{ intervention.depositDate ? intervention.depositDate|date('d/m/Y') : "<div class='missing-info'>Non-renseignée</div>" }}</div>
                                     </div>
                                 </div>
                                 <div class='col-md-auto'>
                                     <div class="d-flex flex-column text-center">
                                         <div>Date de retour</div>
-                                        <div>{{ intervention.returnDate ? intervention.returnDate|date('d-m-Y') : "<div class='missing-info'>Non-renseignée</div>" }}</div>
+                                        <div>{{ intervention.returnDate ? intervention.returnDate|date('d/m/Y') : "<div class='missing-info'>Non-renseignée</div>" }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -168,7 +168,7 @@
                                 {% else %}
                                     <div class='missing-info'>Aucun technicien(s) assigné(s)</div>
                                 {% endif %}
-                                <div>                                    
+                                <div>
                                         Pris en charge par : {{ intervention.user }}
                                 </div>
                             </div>
@@ -199,7 +199,7 @@
                 </div>
             </div>
 
-     
+
                 {% if intervention.interventionReport.step == 9 %}
                     <div class="container-background mb-5 p-4">
                         <div class='f-20 text-center font-weight-bold'>Rapport d'intervention</div>
@@ -230,5 +230,5 @@
             </div>
         </div>
     </div>
-    
+
 {% endblock %}

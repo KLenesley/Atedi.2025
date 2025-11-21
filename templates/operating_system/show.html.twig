@@ -3,7 +3,7 @@
 {% block title %}Gestion du système d'exploitation{% endblock %}
 
 {% block body %}
-    <div class='text-center'>	
+    <div class='text-center'>
         <div class='h2 mb-3 font-weight-bold'>Gestion du système d'exploitation</div>
         <a class="grey-btn f-20 px-4 py-2" href="{{ path('operating_system_edit', {'id': operating_system.id}) }}">Modifier</a>
         {{ include('operating_system/_delete_form.html.twig') }}
@@ -36,7 +36,7 @@
                     {% for intervention in interventions %}
                         <a href="{{ path('intervention_show', {'id': intervention.id}) }}">
                             <div class="row link py-1">
-                                <div class="col-2 my-auto">{{ intervention.depositDate ? intervention.depositDate|date('d-m-Y') : '' }}</div>
+                                <div class="col-2 my-auto">{{ intervention.depositDate ? intervention.depositDate|date('d/m/Y') : '' }}</div>
                                 <div class="col-3 my-auto">{{ intervention.client }}</div>
                                 <div class="col-4 my-auto">{% for technician in intervention.interventionReport.technicians %}{{ technician }}{% if not loop.last %}, {% endif %}{% endfor %}</div>
                                 <div class="col-3 my-auto">{% for task in intervention.tasks %}{{ task }}{% if not loop.last %}, {% endif %}{% endfor %}</div>

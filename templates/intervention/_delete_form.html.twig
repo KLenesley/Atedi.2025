@@ -1,7 +1,7 @@
 <form
-    method="delete"
+    method="post"
     action="{{ path('intervention_delete', {'id': intervention.id}) }}"
-    onsubmit="return confirm('Voulez-vous vraiment supprimer cette demande ?');"
+    onsubmit="return confirm('Voulez-vous vraiment supprimer cette demande d\'intervention ?');"
     class='d-inline'
 >
     <input type="hidden" name="_method" value="DELETE">

@@ -738,7 +738,7 @@ class InterventionController extends AbstractController
         ]);
     }
 
-    #[Route("/{id}", name: "intervention_delete", methods: ["DELETE"])]
+    #[Route("/delete/{id}", name: "intervention_delete", methods: ["POST"])]
     public function delete(Request $request, EntityManagerInterface $em, Intervention $intervention, BillingLineRepository $blr): Response
     {
         $interventionId = $intervention->getId();
