@@ -137,16 +137,9 @@
                         <tr>
                             <td align="center" class='py-1 border-on text-center' colspan="2">                                            
                             [{{ "Matériel non infecté" in intervention.interventionReport.severity ? "X" : "_" }}]Matériel non infecté
-                            [{{ "Matériel légèrement infecté" in intervention.interventionReport.severity ? "X" : "_" }}]Matériel légèrement infecté
-                            [{{ "Matériel dangereusement infecté" in intervention.interventionReport.severity ? "X" : "_" }}]Matériel dangereusement infecté
+                            [{{ "Matériel infecté" in intervention.interventionReport.severity ? "X" : "_" }}]Matériel infecté
                             </td>
                         </tr>
-                        {% if(intervention.interventionReport.severity != "Matériel non infecté") %}
-                        <tr>
-                            <td width="50%" align="right" class='py-1 border-on px-2'>Type d'infection du matériel</td>
-                            <td align="center" class='py-1 border-on px-2'>[{{ "Virus" in intervention.interventionReport.severityProblem ? "X" : "_" }}]Virus</td>
-                        </tr>
-                        {% endif %}
                         <tr>
                             <td align="right" class='py-1 border-on px-2'>Logiciel de nettoyage utilisé(s)</td>
                             <td class='py-1 border-on px-2'>
@@ -275,13 +268,6 @@
                             <tr>
                                 <td align="center" class='py-1 border-on text-center' style="padding-top: 18px; padding-bottom: 14px;" colspan="2">{{ intervention.interventionReport.severity }}</td>
                             </tr>
-                            {% if (intervention.interventionReport.severity) != "Matériel non infecté" %}
-                            <tr>
-                                <td align="center" class='py-2 border-on text-center' colspan="2">
-                                    [{{ "Virus" in intervention.interventionReport.severityProblem ? "X" : "_" }}]Virus
-                                </td>
-                            </tr>
-                            {% endif %}
                         </tbody>
                     </table>
                 </div>
