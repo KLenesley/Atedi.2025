@@ -6,6 +6,7 @@ use App\Entity\Equipment;
 use App\Form\EquipmentType;
 use App\Repository\EquipmentRepository;
 use App\Repository\InterventionRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

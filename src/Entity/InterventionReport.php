@@ -33,13 +33,13 @@ class InterventionReport
     #[ORM\Column(type: "string", length: 255, nullable: true)]
     private $severity;
 
-    #[ORM\Column(type: "array", nullable: true)]
+    #[ORM\Column(type: "json", nullable: true)]
     private $windows_install = [];
 
     #[ORM\ManyToMany(targetEntity: Booklet::class, inversedBy: "interventionReports")]
     private $booklets;
 
-    #[ORM\Column(type: "array", nullable: true)]
+    #[ORM\Column(type: "json", nullable: true)]
     private $severity_problem = [];
 
     #[ORM\ManyToMany(targetEntity: Action::class, inversedBy: "interventionReports")]

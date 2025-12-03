@@ -6,7 +6,7 @@
 ## Configuration requise 
 
 - PHP 8.4
-- Dolibarr >= 20
+- Dolibarr >= 22
 
 
 
@@ -19,7 +19,7 @@ git clone https://github.com/ndlaprovidence/Atedi.git
 
 Change branch : 
 ```
-git checkout 2022-2026-Symfony-7.3
+git checkout 2025-2026-Symfony-7.4
 ```
 
 
