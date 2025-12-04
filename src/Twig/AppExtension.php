@@ -7,7 +7,7 @@ use Twig\Extension\AbstractExtension;
 
 class AppExtension extends AbstractExtension
 {
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('intervStatus', [$this, 'statusFinder']),
@@ -21,16 +21,14 @@ class AppExtension extends AbstractExtension
         switch ($theStatus) {
             case 'En attente':
                 return 'waiting';
-                break;
 
             case 'En cours':
                 return 'active';
-                break;
 
             case 'Terminée':
                 return 'finished';
-                break;
         }
+        return null;
     }
 
     public function windowsFinder($theOperatingSystem)
@@ -47,7 +45,7 @@ class AppExtension extends AbstractExtension
     {
         if (strpos($price,'.')) {
             $delimiter = '.';
-        } else if (strpos($price,',')) {
+        } elseif (strpos($price,',')) {
             $delimiter = ',';
         } else {
             $delimiter = " ";
@@ -58,19 +56,18 @@ class AppExtension extends AbstractExtension
 
         if (count($taskPrice) > 1) {
             $taskCents = intval($taskPrice[1]);
-            if (strlen($taskPrice[1]) == 1) {
-                $taskCents = $taskCents*10;
+            if (strlen($taskPrice[1]) === 1) {
+                $taskCents *= 10;
             }
         } else {
             $taskCents = 0;
         }
 
         $taskCents = strval($taskCents);
-        if (strlen($taskCents) == 1) {
+        if (strlen($taskCents) === 1) {
             $taskCents = '0'.$taskCents;
         }
-        $price = $taskEuro.','.$taskCents;
 
-        return $price;
+        return $taskEuro.','.$taskCents;
     }
 }

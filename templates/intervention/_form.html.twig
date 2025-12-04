@@ -1,87 +1,97 @@
 {{ form_start(form) }}
 
-    <div class="p-4 form container-background">
-        <div class="container">
-            <div class="row justify-content-md-center">
-                <div class='col-8'>
-                    <div class='col row'>
+<div class="p-4 form container-background">
+    <div class="container">
+        <div class="row justify-content-md-center">
+
+            <div class="col-8">
+       
+                <div class="row mb-3">
+                    {% if app.request.attributes.get('_route') != 'intervention_edit' %}
+                        <a class="my-auto mr-2" href="{{ path('client_new', {'s': 'intervention'}) }}">
+                            <i class="fas add-btn add-btn fa-plus-circle fa-lg"></i>
+                        </a>
+                    {% endif %}
+                    <h5>Client</h5>
+                    {{ form_errors(form.client) }}
+                    {{ form_widget(form.client, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+    
+                <div class="row mb-3">
+                    <div class="d-flex align-items-center">
                         {% if app.request.attributes.get('_route') != 'intervention_edit' %}
-                            <a class='my-auto' href="{{ path('client_new', {'s': 'intervention'}) }}"><i class="fas add-btn add-btn fa-plus-circle fa-lg mr-2"></i></a>
+                            <a class="mr-2" href="{{ path('equipment_new', {'s': 'intervention'}) }}">
+                                <i class="fas add-btn fa-plus-circle fa-lg"></i>
+                            </a>
                         {% endif %}
-                        <h5>Client</h5>
-                        {{ form_errors(form.client) }}
-                        {{ form_widget(form.client, {'attr': {'class': 'mb-3'}}) }}
+                        <h5 class="mb-0">Équipement</h5>
                     </div>
-
-                    <div class='col row'>
-                        <div class='col row'>
-                            {% if app.request.attributes.get('_route') != 'intervention_edit' %}
-                                <a href="{{ path('equipment_new', {'s': 'intervention'}) }}"><i class="fas add-btn fa-plus-circle fa-lg mr-2"></i></a>
-                            {% endif %}
-                            <h5>Equipement</h5>    
-                            {{ form_errors(form.equipment) }}
-                            {{ form_widget(form.equipment, {'attr': {'class': 'mb-3 mr-3'}}) }}
-                        </div>
-                    </div>
-
-                    <div class='col row'>
-                        <div class='col-md-auto row'>
-                            {% if app.request.attributes.get('_route') != 'intervention_edit' %}
-                                <a href="{{ path('operating_system_new', {'s': 'intervention'}) }}"><i class="fas add-btn fa-plus-circle fa-lg mr-2"></i></a>
-                            {% endif %}
-                            <h5>Système d'exploitation</h5>            
-                            {{ form_errors(form.operating_system) }}
-                            {{ form_widget(form.operating_system, {'attr': {'class': 'mb-3'}}) }}
-                        </div>
-                    </div>
+                    {{ form_errors(form.equipment) }}
+                    {{ form_widget(form.equipment, {'attr': {'class': 'form-control'}}) }}
                 </div>
 
-                <div class='col row justify-content-end'>
-                    <div class='col row'>
+                <div class="row mb-3">
+                    <div class="d-flex align-items-center">
                         {% if app.request.attributes.get('_route') != 'intervention_edit' %}
-                            <a href="{{ path('task_new', {'s': 'intervention'}) }}"><i class="fas add-btn fa-plus-circle fa-lg mr-2"></i></a>
+                            <a class="mr-2" href="{{ path('operating_system_new', {'s': 'intervention'}) }}">
+                                <i class="fas add-btn fa-plus-circle fa-lg"></i>
+                            </a>
                         {% endif %}
-                        <h5>Tâche(s)</h5>            
-                        {{ form_errors(form.tasks) }}
-                        {{ form_widget(form.tasks, {'attr': {'class': 'mb-3', 'required': 'required'}}) }}
+                        <h5 class="mb-0">Système d'exploitation</h5>
                     </div>
+                    {{ form_errors(form.operating_system) }}
+                    {{ form_widget(form.operating_system, {'attr': {'class': 'form-control'}}) }}
                 </div>
 
-                <div class='col row justify-content-end'>
-                    <div class='col row'>
+
+                <div class="row mb-3">
+                    <div class="d-flex align-items-center mb-2">
                         {% if app.request.attributes.get('_route') != 'intervention_edit' %}
-                            <a href="{{ path('prop_new', {'s': 'intervention'}) }}"><i class="fas add-btn fa-plus-circle fa-lg mr-2"></i></a>
+                            <a href="{{ path('task_new', {'s': 'intervention'}) }}" class="mr-2">
+                                <i class="fas add-btn fa-plus-circle fa-lg"></i>
+                            </a>
                         {% endif %}
-                        <h5>Accessoire(s) Manquant(s)</h5>            
-                        {{ form_errors(form.props) }}
-                        {{ form_widget(form.props, {'attr': {'class': 'mb-3'}}) }}
+                        <h5 class="mb-0">Tâche(s)</h5>
                     </div>
+                    {{ form_errors(form.tasks) }}
+                    {{ form_widget(form.tasks, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
                 </div>
 
-                <div class='col-6'>
-                    <div class='col-md-auto '>
-                        <h5>Commentaire <span class='h6 font-italic'>(facultatif)<span></h5>
-                        {{ form_errors(form.comment) }}
-                        {{ form_widget(form.comment, {'attr': {'class': 'mb-3', 'rows': '5'}}) }}
-                    </div>
+  
+                <div class="row mb-3">
+                    <h5>Commentaire <span class="h6 font-italic">(facultatif)</span></h5>
+                    {{ form_errors(form.comment) }}
+                    {{ form_widget(form.comment, {'attr': {'class': 'form-control', 'rows': '5'}}) }}
                 </div>
-                <div class='col-6'>
-                    <div class='col-md-auto justify-content-end'>
-                        <h5>Date de retour <span class='h6 font-italic'>(facultatif)<span></h5>            
-                        {{ form_errors(form.return_date) }}
-                        {{ form_widget(form.return_date, {'attr': {'class': 'mb-3'}}) }}
-                    </div>
-                    <div class='col-md-auto justify-content-end'>
-                        <h5>Pris en charge par</h5>
-                        {{ form_errors(form.user) }}
-                        {{ form_widget(form.user, {'attr': {'class': 'mb-3'}}) }}
-                    </div>
-                </div>
-                
-                <button class=" green-btn py-2 px-4 mt-3">{{ button_label|default('Valider') }}</button>
 
+                <div class="row mb-3">
+                            <h5>Accessoire(s) Manquant(s)</h5>            
+                            {{ form_errors(form.props) }}
+                            {{ form_widget(form.props, {'attr': {'class': 'form-control'}}) }}
+
+                </div>
+
+   
+                <div class="row mb-3">
+                    <h5>Date de retour <span class="h6 font-italic">(facultatif)</span></h5>
+                    {{ form_errors(form.return_date) }}
+                    {{ form_widget(form.return_date, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <div class="row mb-3">
+                    <h5>Pris en charge par</h5>
+                    {{ form_errors(form.user) }}
+                    {{ form_widget(form.user, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+
+                <div class="text-center mt-3">
+                    <button class="green-btn py-2 px-4">{{ button_label|default('Valider') }}</button>
+                </div>
             </div>
         </div>
     </div>
+</div>
 
 {{ form_end(form) }}

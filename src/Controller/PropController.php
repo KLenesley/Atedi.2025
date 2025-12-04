@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Prop;
 use App\Form\PropType;
 use App\Repository\PropRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\InterventionRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,21 +24,20 @@ class PropController extends AbstractController
     }
 
     #[Route("/new", name: "prop_new", methods: ["GET","POST"])]
-    public function new(Request $request): Response
+    public function new(Request $request, EntityManagerInterface $em): Response
     {
         $prop = new Prop();
         $form = $this->createForm(PropType::class, $prop);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($prop);
-            $entityManager->flush();
+            $em->persist($prop);
+            $em->flush();
 
             if ( $request->query->has('s') == 'intervention') {
                 return $this->redirectToRoute('intervention_new');
             }
-            
+
             return $this->redirectToRoute('prop_show', [
                 'id' => $prop->getId(),
             ]);
@@ -61,13 +61,13 @@ class PropController extends AbstractController
     }
 
     #[Route("/{id}/edit", name: "prop_edit", methods: ["GET","POST"])]
-    public function edit(Request $request, Prop $prop): Response
+    public function edit(Request $request, Prop $prop, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(PropType::class, $prop);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $em->flush();
 
             return $this->redirectToRoute('prop_show', [
                 'id' => $prop->getId(),
@@ -81,12 +81,11 @@ class PropController extends AbstractController
     }
 
     #[Route("/{id}", name: "prop_delete", methods: ["DELETE"])]
-    public function delete(Request $request, Prop $prop): Response
+    public function delete(Request $request, Prop $prop, EntityManagerInterface $em): Response
     {
         if ($this->isCsrfTokenValid('delete'.$prop->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($prop);
-            $entityManager->flush();
+            $em->remove($prop);
+            $em->flush();
         }
 
         return $this->redirectToRoute('prop_index');

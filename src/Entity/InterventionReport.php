@@ -7,7 +7,6 @@ use App\Entity\Booklet;
 use App\Entity\Technician;
 use App\Entity\Intervention;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\InterventionReport;
 use App\Entity\SoftwareInterventionReport;
 use Doctrine\Common\Collections\Collection;
 use App\Repository\InterventionReportRepository;
@@ -34,13 +33,13 @@ class InterventionReport
     #[ORM\Column(type: "string", length: 255, nullable: true)]
     private $severity;
 
-    #[ORM\Column(type: "array", nullable: true)]
+    #[ORM\Column(type: "json", nullable: true)]
     private $windows_install = [];
 
     #[ORM\ManyToMany(targetEntity: Booklet::class, inversedBy: "interventionReports")]
     private $booklets;
 
-    #[ORM\Column(type: "array", nullable: true)]
+    #[ORM\Column(type: "json", nullable: true)]
     private $severity_problem = [];
 
     #[ORM\ManyToMany(targetEntity: Action::class, inversedBy: "interventionReports")]
@@ -69,7 +68,6 @@ class InterventionReport
 
     public function __construct()
     {
-        $this->softwares = new ArrayCollection();
         $this->booklets = new ArrayCollection();
         $this->actions = new ArrayCollection();
         $this->softwareInterventionReports = new ArrayCollection();

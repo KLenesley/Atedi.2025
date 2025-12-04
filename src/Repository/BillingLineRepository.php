@@ -19,7 +19,7 @@ class BillingLineRepository extends ServiceEntityRepository
         parent::__construct($registry, BillingLine::class);
     }
 
-    public function findAll()
+    public function findAll(): array
     {
         return $this->findBy(
             [],

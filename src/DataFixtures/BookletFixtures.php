@@ -9,7 +9,7 @@ use App\Entity\Booklet;
 
 class BookletFixtures extends Fixture
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager):void
     {
         $data = new Booklet();
         $data->setTitle('Avast');

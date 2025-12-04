@@ -9,7 +9,7 @@ use App\Entity\Client;
 
 class ClientFixtures extends Fixture
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager):void
     {
         $data = new Client();
         $data->setLastName('HOCHET');

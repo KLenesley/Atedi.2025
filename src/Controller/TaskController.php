@@ -16,6 +16,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('/task')]
 class TaskController extends AbstractController
 {
+    public $atediHelper;
+    public $em;
     public function __construct(AtediHelper $AtediHelper)
     {
         $this->atediHelper = $AtediHelper;
@@ -30,22 +32,21 @@ class TaskController extends AbstractController
     }
 
     #[Route("/new", name: "task_new", methods: ["GET","POST"])]
-    public function new(Request $request): Response
+    public function new(Request $request, EntityManagerInterface $em): Response
     {
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-    
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($task);
-            $entityManager->flush();
+
+            $em->persist($task);
+            $em->flush();
 
             if ( $request->query->has('s') == 'intervention') {
                 return $this->redirectToRoute('intervention_new');
             }
-            
+
             return $this->redirectToRoute('task_show', [
                 'id' => $task->getId(),
             ]);
@@ -88,7 +89,7 @@ class TaskController extends AbstractController
             }
 
             $this->em->flush();
-            
+
             return $this->redirectToRoute('task_show', [
                 'id' => $task->getId(),
             ]);
@@ -101,12 +102,11 @@ class TaskController extends AbstractController
     }
 
     #[Route("/{id}", name: "task_delete", methods: ["DELETE"])]
-    public function delete(Request $request, Task $task): Response
+    public function delete(Request $request, Task $task, EntityManagerInterface $em): Response
     {
         if ($this->isCsrfTokenValid('delete'.$task->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($task);
-            $entityManager->flush();
+            $em->remove($task);
+            $em->flush();
         }
 
         return $this->redirectToRoute('task_index');

@@ -30,7 +30,6 @@ class Software
 
     public function __construct()
     {
-        $this->interventionReports = new ArrayCollection();
         $this->softwareInterventionReports = new ArrayCollection();
     }
 

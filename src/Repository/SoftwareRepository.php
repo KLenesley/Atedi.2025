@@ -19,7 +19,7 @@ class SoftwareRepository extends ServiceEntityRepository
         parent::__construct($registry, Software::class);
     }
 
-    public function findAll()
+    public function findAll(): array
     {
         return $this->findBy(
             [],

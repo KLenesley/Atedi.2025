@@ -9,7 +9,7 @@ use App\Entity\OperatingSystem;
 
 class OperatingSystemFixtures extends Fixture
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager):void
     {
         $data = new OperatingSystem();
         $data->setTitle('Windows 10');

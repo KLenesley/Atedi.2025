@@ -2,15 +2,15 @@
 
 {% block title %}Liste des interventions{% endblock %}
 
-{% block javascripts %}        
+{% block javascripts %}
     <script src="{{ asset('assets/js/searchBar.js') }}"></script>
 {% endblock %}
 
 {% block body %}
-    <div class='text-center mb-2'>	
+    <div class='text-center mb-2'>
         <div class='h2 mb-3 font-weight-bold'>Liste des interventions</div>
     </div>
-    <div class='text-center mb-2'>	
+    <div class='text-center mb-2'>
         <a href='{{ path('intervention_new') }}'><input type='button' value="Nouvelle demande d'intervention" class='grey-btn f-20 py-2 px-4' /></a>
     </div>
 
@@ -32,7 +32,7 @@
         {% for intervention in interventions %}
             <a class='data-row' href="{{ path('intervention_show', {'id': intervention.id}) }}">
                 <div class="row {{ intervStatus(intervention.status) }} link p-2">
-                    <div class="col-2 my-auto">{{ intervention.depositDate ? intervention.depositDate|date('d-m-Y') : '' }}</div>
+                    <div class="col-2 my-auto">{{ intervention.depositDate ? intervention.depositDate|date('d/m/Y') : '' }}</div>
                     <div class="col-2 my-auto">{{ intervention.client }}</div>
                     <div class="col-2 my-auto">{{ intervention.client.phone }}</div>
                     <div class="col-2 my-auto">
