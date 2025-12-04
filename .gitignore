@@ -20,3 +20,4 @@
 
 .ddev/
 .DS_Store
+.vscode/
