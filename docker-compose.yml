@@ -6,7 +6,7 @@ services:
     env_file:
       - .env.local  # Charge les variables depuis .env.local
     volumes:
-      - db_data:/var/lib/mariadb
+      - db_data:/var/lib/mysql
     ports:
       - "3306:3306"
     healthcheck: # pour s'assurer que la BDD est prête avant de démarrer l'app

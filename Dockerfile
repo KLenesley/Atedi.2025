@@ -26,8 +26,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www
 COPY . .
 
-# Install des dépendances PHP (prod only)
-RUN composer install --optimize-autoloader --no-interaction --no-scripts --dev
+# Install des dépendances PHP (prod)
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress
 
 # --- Configuration de l'environnement ---
 
