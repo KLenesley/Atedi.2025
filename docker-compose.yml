@@ -1,16 +1,16 @@
 services:
   db:
-    image: mysql:8.0
-    container_name: ma_bdd_mysql
+    image: mariadb:11.8
+    container_name: db_atedi
     restart: unless-stopped
     env_file:
       - .env.local  # Charge les variables depuis .env.local
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data:/var/lib/mariadb
     ports:
       - "3306:3306"
     healthcheck: # pour s'assurer que la BDD est prête avant de démarrer l'app
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost"]
       interval: 5s
       timeout: 3s
       retries: 10
@@ -18,14 +18,14 @@ services:
 
   app:
     build: .
-    container_name: mon_app_symfony
+    container_name: atedi_symfony
     restart: unless-stopped
     volumes:
       - .:/var/www # Pour le développement local, pour voir les changements en direct
     env_file:
       - .env.local # Charge les variables depuis .env.local
     ports:
-      - "8088:80" # On expose le port 80 de Nginx sur le port 8088 de l'hôte
+      - "8080:80" # On expose le port 80 de Nginx sur le port 8080 de l'hôte
     depends_on:
       db:
         condition: service_healthy   # OBLIGATOIRE avec healthcheck
