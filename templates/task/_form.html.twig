@@ -27,12 +27,12 @@
                                 <div class="input-group-prepend">
                                     <div class="input-group-text">#</div>
                                 </div>
-                                {{ form_widget(form.color, {'attr': {'maxlength': '6', 'class': 'color-picker'}}) }}
+                                {{ form_widget(form.color, {'attr': {'maxlength': '7', 'class': 'color-picker'}}) }}
                             </div>
                         </div>
                         {% if app.request.get('_route') == 'task_edit' %}
                             <div class='col-md-auto my-auto'>                                                       
-                                    <div class='color-box' data-color='#{{ form.vars.value.color }}'></div>                            
+                                    <div class='color-box' data-color='{{ form.vars.value.color }}'></div>                            
                             </div>
                         {% endif %}
                     </div>

@@ -41,6 +41,8 @@ class TaskController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $em->persist($task);
+            dump($task);
+            dump($em);
             $em->flush();
 
             if ( $request->query->has('s') == 'intervention') {

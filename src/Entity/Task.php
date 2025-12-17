@@ -26,7 +26,7 @@ class Task
     #[ORM\ManyToMany(targetEntity: Intervention::class, mappedBy: "tasks")]
     private $interventions;
 
-    #[ORM\Column(type: "string", length: 6)]
+    #[ORM\Column(type: "string", length: 7)]
     private string $color;
 
     #[ORM\Column(type: "string", length: 255)]

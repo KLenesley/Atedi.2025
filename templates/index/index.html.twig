@@ -4,7 +4,7 @@
 
 {% block javascripts %}
     <script src="{{ asset('assets/js/colorFinder.js') }}"></script>
-    <script src="{{ asset('assets/js/tooltip.js') }}"></script>
+
 {% endblock %}
 
 {% block body %}
@@ -34,7 +34,7 @@
             <a href="{{ path('intervention_show', {'id': intervention.id}) }}">
                 <div class="row justify-content-md-center p-4 interv-row {{ intervStatus(intervention.status) }}">
                     <div class="col-md-auto interv-row-tab-1 my-auto">
-                        <div class="color-box" data-color="#{% for task in intervention.tasks %}{{ task.color }}{% endfor %}"></div>
+                        <div class="color-box" data-color="{% for task in intervention.tasks %}{{ task.color }}{% endfor %}"></div>
                     </div>
                     <div class="col-6 interv-row-tab-2 my-auto">
                         <div class="f-20">
