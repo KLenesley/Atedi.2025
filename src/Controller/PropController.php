@@ -23,7 +23,7 @@ class PropController extends AbstractController
         ]);
     }
 
-    #[Route("/new", name: "prop_new", methods: ["GET","POST"])]
+    #[Route("/new", name: "prop_new", methods: ["GET", "POST"])]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
         $prop = new Prop();
@@ -34,7 +34,7 @@ class PropController extends AbstractController
             $em->persist($prop);
             $em->flush();
 
-            if ( $request->query->has('s') == 'intervention') {
+            if ($request->query->has('s') == 'intervention') {
                 return $this->redirectToRoute('intervention_new');
             }
 
@@ -60,7 +60,7 @@ class PropController extends AbstractController
         ]);
     }
 
-    #[Route("/{id}/edit", name: "prop_edit", methods: ["GET","POST"])]
+    #[Route("/{id}/edit", name: "prop_edit", methods: ["GET", "POST"])]
     public function edit(Request $request, Prop $prop, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(PropType::class, $prop);
@@ -83,7 +83,7 @@ class PropController extends AbstractController
     #[Route("/{id}", name: "prop_delete", methods: ["DELETE"])]
     public function delete(Request $request, Prop $prop, EntityManagerInterface $em): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$prop->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $prop->getId(), $request->request->get('_token'))) {
             $em->remove($prop);
             $em->flush();
         }
