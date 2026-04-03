@@ -129,7 +129,7 @@ class InterventionController extends AbstractController
                             // 1) Recherche/création du client dans Dolibarr
                             $dolibarrClientId = $this->dolibarrHelper->getDolibarrClientId($intervention->getClient());
                             if (isset($dolibarrClientId)) {
-                                $this->addFlash('success', "L'ID du client '" . $intervention->getClient()->getLastName() . "' est : '" . $dolibarrClientId . "'");
+                                // $this->addFlash('success', "L'ID du client '" . $intervention->getClient()->getLastName() . "' est : '" . $dolibarrClientId . "'");
 
                                 // 2) Recherche/création du (ou des) service(s) dans Dolibarr
                                 $dolibarrProductServiceId = null;
@@ -138,7 +138,7 @@ class InterventionController extends AbstractController
                                     $dolibarrProductServiceId = $this->dolibarrHelper->getDolibarrProductServiceId($task, 'service');
                                     if (isset($dolibarrProductServiceId)) {
                                         $dolibarrLignesFacture[$dolibarrProductServiceId] = $task;
-                                        $this->addFlash('success', "L'ID du service '" . $task->getTitle() . "' est : '" . $dolibarrProductServiceId . "'");
+                                        // $this->addFlash('success', "L'ID du service '" . $task->getTitle() . "' est : '" . $dolibarrProductServiceId . "'");
                                     } else {
                                         $this->addFlash('error', "Une erreur est intervenue, le service '" . $task->getTitle() . "' n'a pas été trouvé/créé dans Dolibarr.");
                                     }
