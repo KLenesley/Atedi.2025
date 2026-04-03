@@ -3,11 +3,15 @@
 namespace App\Entity;
 
 use App\Entity\Task;
+<<<<<<< HEAD
+use App\Entity\Prop;
+=======
 use App\Entity\User;
 use App\Entity\Prop;
 use App\Entity\Client;
 use DateTimeInterface;
 use App\Entity\Equipment;
+>>>>>>> origin/production
 use App\Entity\BillingLine;
 use Doctrine\DBAL\Types\Types;
 use App\Entity\OperatingSystem;
@@ -43,9 +47,17 @@ class Intervention
     #[ORM\JoinColumn(nullable: false)]
     private ?Equipment $equipment = null;
 
+<<<<<<< HEAD
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Prop", inversedBy="interventions")
+     * @ORM\JoinTable(name="intervention_prop")
+     */
+    private $props;
+=======
     #[ORM\ManyToMany(targetEntity: Prop::class, inversedBy: "interventions")]
     #[ORM\JoinTable(name: "intervention_prop")]
     private Collection $props;
+>>>>>>> origin/production
 
     #[ORM\ManyToMany(targetEntity: Task::class, inversedBy: "interventions")]
     private Collection $tasks;
@@ -277,4 +289,29 @@ class Intervention
 
         return $this;
     }
+<<<<<<< HEAD
+
+
+    public function getProps(): ?Collection
+    {
+        return $this->props;
+    }
+
+    public function addProp(Prop $prop): self
+    {
+        if (!$this->props->contains($prop)) {
+            $this->props[] = $prop;
+        }
+        return $this;
+    }
+    
+    public function removeProp(Prop $prop): self
+    {
+        if ($this->props->contains($prop)) {
+            $this->props->removeElement($prop);
+        }    
+        return $this;
+    }
+=======
+>>>>>>> origin/production
 }
