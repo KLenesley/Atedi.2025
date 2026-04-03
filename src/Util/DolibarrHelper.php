@@ -146,7 +146,7 @@ class DolibarrHelper
                 $action = 'la création du ' . ($type == 1 ? 'service' : 'produit') . ' dans Dolibarr';
                 $this->flashMessageService->addSuccess("Le " . ($type == 1 ? 'service' : 'produit') . " '" . $product_name . "' n'a pas trouvé, ajout du " . ($type == 1 ? 'service' : 'produit') . " dans Dolibarr...");
 
-                $ref = 'ATEDI-' . str_pad($product->getId(), 3, "0", STR_PAD_LEFT);
+                $ref = 'ATEDI-' . str_pad($product->getId(), 5, "0", STR_PAD_LEFT);
                 $barcode = '99' . str_pad($product->getId(), 11, "0", STR_PAD_LEFT);
                 $price = round(($product->getPrice() / (1 + ($this->TAUX_TVA / 100))), 2);
                 $price_ttc = round($product->getPrice(), 2);
