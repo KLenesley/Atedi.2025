@@ -84,8 +84,14 @@ class EquipmentController extends AbstractController
     public function delete(Request $request, Equipment $equipment, EntityManagerInterface $em): Response
     {
         if ($this->isCsrfTokenValid('delete'.$equipment->getId(), $request->request->get('_token'))) {
-            $em->remove($equipment);
-            $em->flush();
+            // Vérifier s'il y a des interventions liées
+            if ($equipment->getInterventions()->count() > 0) {
+                $this->addFlash('error', 'Impossible de supprimer "' . $equipment->getTitle() . '". Cet équipement est utilisé par ' . $equipment->getInterventions()->count() . ' intervention(s). Supprimez d\'abord les interventions associées.');
+            } else {
+                $em->remove($equipment);
+                $em->flush();
+                $this->addFlash('success', 'L\'équipement a été supprimé avec succès.');
+            }
         }
 
         return $this->redirectToRoute('equipment_index');

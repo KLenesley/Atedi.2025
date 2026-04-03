@@ -69,18 +69,23 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route("/delete/{id}", name: "user_delete", methods: ["POST"])]
+    #[Route("/delete/{id}", name: "user_delete", methods: ["DELETE"])]
     public function delete(Request $request, User $user, EntityManagerInterface $em): Response
     {
-        $this->addFlash('info', "Suppression de l'utilisateur n°" . $user->getId() . " en cours...");
+        $userId = $user->getId();
+        $userName = $user->getFirstName();
 
-        if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
-            $em->remove($user);
-            $em->flush();
-            $this->addFlash('success', "Suppression de l'utilisateur n°" . $user->getId() . " réussie.");
-        }
-        else {
-            $this->addFlash('error', "Échec de la suppression de l'utilisateur n°" . $user->getId() . ".");
+        if ($this->isCsrfTokenValid('delete' . $userId, $request->request->get('_token'))) {
+            // Vérifier s'il y a des interventions liées
+            if ($user->getIntervention()->count() > 0) {
+                $this->addFlash('error', 'Impossible de supprimer l\'utilisateur "' . $user->getEmail() . '". Cet utilisateur est assigné à ' . $user->getIntervention()->count() . ' intervention(s). Supprimez d\'abord les interventions associées.');
+            } else {
+                $em->remove($user);
+                $em->flush();
+                $this->addFlash('success', "Suppression de l'utilisateur " . $userName . " réussie.");
+            }
+        } else {
+            $this->addFlash('error', "Échec de la suppression de l'utilisateur n°" . $userId . ".");
         }
 
         return $this->redirectToRoute('user_index');

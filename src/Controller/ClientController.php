@@ -91,10 +91,14 @@ class ClientController extends AbstractController
         $clientId = $client->getId();
 
         if ($this->isCsrfTokenValid('delete' . $clientId, $request->request->get('_token'))) {
-            $em->remove($client);
-            $em->flush();
-
-            $this->addFlash('success', "Suppression du client n°" . $clientId . " réussie.");
+            // Vérifier s'il y a des interventions liées
+            if ($client->getInterventions()->count() > 0) {
+                $this->addFlash('error', 'Impossible de supprimer le client "' . $client->getLastName() . '". Ce client a ' . $client->getInterventions()->count() . ' intervention(s). Supprimez d\'abord les interventions associées.');
+            } else {
+                $em->remove($client);
+                $em->flush();
+                $this->addFlash('success', "Suppression du client n°" . $clientId . " réussie.");
+            }
         } else {
             $this->addFlash('error', "Échec de la suppression du client n°" . $clientId . ".");
         }
