@@ -51,12 +51,12 @@ class DolibarrHelper
 
             // Afficher la requête envoyée à Dolibarr
             // @DEBUG
-            $this->flashMessageService->addSuccess("Requête envoyée à Dolibarr : " . $this->DOLIBARR_URL . 'api/index.php/thirdparties?DOLAPIKEY=' . $this->DOLIBARR_APIKEY . '&sqlfilters=t.nom:=:\'' . $client_name . '\'&limit=1');
+            // $this->flashMessageService->addSuccess("Requête envoyée à Dolibarr : " . $this->DOLIBARR_URL . 'api/index.php/thirdparties?DOLAPIKEY=' . $this->DOLIBARR_APIKEY . '&sqlfilters=t.nom:=:\'' . $client_name . '\'&limit=1');
 
             // Afficher la réponse complète de Dolibarr
             // @DEBUG
-            $this->flashMessageService->addSuccess("1) Réponse de Dolibarr '" . print_r($response, true));
-            dump("1) Réponse de Dolibarr '" . print_r($response, true));
+            // $this->flashMessageService->addSuccess("1) Réponse de Dolibarr '" . print_r($response, true));
+            // dump("1) Réponse de Dolibarr '" . print_r($response, true));
 
             // Afficher le code de retour
             $statusCode = $response->getStatusCode();
@@ -177,12 +177,12 @@ class DolibarrHelper
 
                 // Afficher la requête envoyée à Dolibarr
                 // @DEBUG
-                $this->flashMessageService->addSuccess("Requête envoyée à Dolibarr : " . $this->DOLIBARR_URL . 'api/index.php/products?DOLAPIKEY=' . $this->DOLIBARR_APIKEY);
+                // $this->flashMessageService->addSuccess("Requête envoyée à Dolibarr : " . $this->DOLIBARR_URL . 'api/index.php/products?DOLAPIKEY=' . $this->DOLIBARR_APIKEY);
 
                 // Afficher la réponse complète de Dolibarr
                 // @DEBUG
-                $this->flashMessageService->addSuccess("2) Réponse de Dolibarr '" . print_r($response, true));
-                dump("2) Réponse de Dolibarr '" . print_r($response, true));
+                // $this->flashMessageService->addSuccess("2) Réponse de Dolibarr '" . print_r($response, true));
+                // dump("2) Réponse de Dolibarr '" . print_r($response, true));
 
                 // Afficher le contenu JSON de la réponse
                 $dolibarrProductId = $response->getContent();
