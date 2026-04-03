@@ -2,13 +2,13 @@
 
 {% block title %}Accueil{% endblock %}
 
-{% block javascripts %}        
+{% block javascripts %}
     <script src="{{ asset('assets/js/colorFinder.js') }}"></script>
     <script src="{{ asset('assets/js/tooltip.js') }}"></script>
 {% endblock %}
 
 {% block body %}
-    <div class='text-center mb-2'>	
+    <div class='text-center mb-2'>
         <a href='{{ path('intervention_new') }}'><input type='button' value="Nouvelle demande d'intervention" class='grey-btn f-20 w-50 p-2' /></a>
     </div>
 
@@ -34,7 +34,7 @@
             <a href="{{ path('intervention_show', {'id': intervention.id}) }}">
                 <div class="row justify-content-md-center p-4 interv-row {{ intervStatus(intervention.status) }}">
                     <div class="col-md-auto interv-row-tab-1 my-auto">
-                        <div class="color-box" data-color="#{% for task in intervention.tasks %}{{ task.color }}{% endfor %}"></div>
+                        <div class="color-box" data-color="{% for task in intervention.tasks %}{{ task.color }}{% endfor %}"></div>
                     </div>
                     <div class="col-6 interv-row-tab-2 my-auto">
                         <div class="f-20">
@@ -46,7 +46,7 @@
                     <div class="col interv-row-tab-3">
                         <div class="d-flex flex-column">
                             <div class="f-20">{{ intervention.equipment }} - {{ intervention.operatingSystem }}</div>
-                            <div class="interv-sub-info">{{ intervention.depositDate ? intervention.depositDate|date('d-m-Y') : '' }} - {{ intervention.client }} - n°{{intervention.id }}</div>
+                            <div class="interv-sub-info">{{ intervention.depositDate ? intervention.depositDate|date('d/m/Y') : '' }} - {{ intervention.client }} - n°{{intervention.id }}</div>
                         </div>
                     </div>
                 </div>

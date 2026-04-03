@@ -7,7 +7,7 @@
     <script src="{{ asset('assets/js/menuExpend.js') }}"></script>     
     <script src="{{ asset('assets/js/searchBar.js') }}"></script>
     <script src="{{ asset('assets/js/resetSelection.js') }}"></script>     
-    <script src="{{ asset('assets/js/tooltip.js') }}"></script>     
+    <script src="{{ asset('assets/js/tooltip.js') }}"></script>
 {% endblock %}
 
 {% block body %}
@@ -55,14 +55,10 @@
                 <div class="container-background col p-4 content list">
                     <div class='row justify-content-center'>
                         <div class='col-md-auto'><input class='mr-2' type="radio" name="severity" value="Matériel non infecté" required checked />Matériel non infecté</div>
-                        <div class='col-md-auto'><input class='mr-2' type="radio" name="severity" value="Matériel légèrement infecté" />Matériel légèrement infecté</div>
-                        <div class='col-md-auto'><input class='mr-2' type="radio" name="severity" value="Matériel dangereusement infecté" />Matériel dangereusement infecté</div>
+                        <div class='col-md-auto'><input class='mr-2' type="radio" name="severity" value="Matériel infecté" />Matériel infecté</div>
                     </div>
                     
                     <div class='more-content'>
-                        <div class='row justify-content-center mt-3'>
-                            <div class='col-md-auto'><input class='mr-2' type="checkbox" name="severity-problem[]" value="Virus" />Virus</div>
-                        </div>
                         <h5>Analyse interne <span class='h6 font-italic'>(facultatif)<span></h5>
                         <input class='w-100 mb-3 p-2' type="text" id="internalAnalysis" name="internal-analysis">
                         <input class='w-100 mb-3 p-2' type="text" id="searchBar" placeholder="Rechercher un logiciel">
@@ -139,7 +135,7 @@
         {% elseif step == 6 %}
             <div class="row justify-content-around mb-3 report-container">
                 <div class='col-12 justify-content-center row step-title p-2 mb-3'>
-                    <div class='f-20'>Rapport CrystalDisk</div>
+                    <div class='f-20'>Rapport CrystalDisk & Usure batterie</div>
                 </div>
                 <div class="container-background col p-4 content list">
                     <div class="col-auto text-center">État du disk :</div>                    
@@ -155,7 +151,7 @@
                         </div>
                         <br>
                         <div>
-                            Taux d'usure : <input class='w-100' id="batteryDegradationInput" name="battery-degradation" type="text" placeholder="Taux">
+                            Taux d'usure batterie : <input class='w-100' id="batteryDegradationInput" name="battery-degradation" type="text" placeholder="Taux">
                         </div>
                         <div>
                             
@@ -276,9 +272,6 @@
                         <hr>
                         <div class='comment p-2'><span class='font-weight-bold'>Sévérité</span> : {{ intervention.interventionReport.severity }}</div>
                         <div class='comment p-2 mt-2'><span class='font-weight-bold'>Analyse interne</span> : {{ intervention.interventionReport.internalAnalysis ?: "<span class='missing-info font-weight-bold'>Pas d'informations sur l'analyse interne</span>"}}</div>
-                        <div class='row mt-2 data-row'>
-                            <div class='col-3'>Virus</div><div class='col-9'>{% if "Virus" in severityProblems %}<i class="fas fa-plus"></i>{% else %}<i class="fas fa-minus"></i>{% endif %}</div>
-                        </div>
                     </div>
 
                     <div class="container-background col mb-auto p-4">

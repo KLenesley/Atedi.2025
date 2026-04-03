@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Insufficient Permissions{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading">Accès refusé!</h4>
+            <p>Vous n'avez pas le niveau d'accréditation nécessaire pour accéder à cette page.</p>
+            <hr>
+            <p class="mb-0">Veuillez vous connecter avec un compte autorisé.</p>
+        </div>
+    </div>
+{% endblock %}

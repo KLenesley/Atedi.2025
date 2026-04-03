@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Atedi{% endblock %}</title>
+        <title>{% block title %}ATEDI{% endblock %}</title>
         {% block stylesheets %}
             <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
             <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
@@ -19,10 +19,10 @@
 
     {% if app.request.get('_route') != 'app_login' %}
         <nav class="navbar navbar-expand-md navbar-dark">
-            <a class="navbar-brand font-weight-bold" href="/">Atedi</a>
+            <a class="navbar-brand font-weight-bold" href="{{ path('index') }}">ATEDI</a>
 
             <div class="collapse navbar-collapse">
-                
+
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item {% if app.request.get('_route') starts with 'index' %} active {% endif %} px-4">
                         <a class="nav-link" href="/">Accueil</a>
@@ -34,12 +34,12 @@
                         <a class="nav-link" href="{{ path('client_index') }}">Clients</a>
                     </li>
 
-                    <li class="nav-item dropdown 
-                        {% if (app.request.get('_route') starts with 'equipment') 
-                            or (app.request.get('_route') starts with 'operating_system') 
-                            or (app.request.get('_route') starts with 'task') 
-                            or (app.request.get('_route') starts with 'technician') 
-                            or (app.request.get('_route') starts with 'user') 
+                    <li class="nav-item dropdown
+                        {% if (app.request.get('_route') starts with 'equipment')
+                            or (app.request.get('_route') starts with 'operating_system')
+                            or (app.request.get('_route') starts with 'task')
+                            or (app.request.get('_route') starts with 'technician')
+                            or (app.request.get('_route') starts with 'user')
                         %} active {% endif %} px-4">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Outils</a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -63,8 +63,8 @@
                         <a class="nav-link" href="{{ path('app_logout') }}"><i class="fas fa-sign-out-alt"></i></a>
                     </li>
                 </ul>
-                
-            </div> 
+
+            </div>
         </nav>
 
     {% endif %}
@@ -75,34 +75,49 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h2 class="modal-title"><i class="fas fa-info-circle mr-3"></i>A propos de Atedi</h2>
+                            <h2 class="modal-title"><i class="fas fa-info-circle mr-3"></i>A propos de ATEDI</h2>
                             <button type="button" class="close" data-dismiss="modal">
                                 <span>&times;</span>
                             </button>
                         </div>
                         <div class="modal-body">
-                            <p>Atedi est un logiciel libre sous licence <a href='https://cecill.info/' target="_blank"><u>CeCILL</u></a>.</p>
+                            <p>ATEDI (<b>A</b>ssistance <b>T</b>echnique <b>E</b>t <b>D</b>épannage <b>I</b>nformatique) est un logiciel libre sous licence <a href='https://cecill.info/' target="_blank"><u>CeCILL</u></a>.</p>
                             <p>Son but est de faciliter la gestion des interventions techniques sur du matériel informatique.</p>
                             <p></p>
-                                
-                                                
+
+
                             <hr>
-                            <h5>Logiciel développé par :</h5>
-                            <p>2020 - HOCHET Dylan & LEYSENNE Rémi</p>
-                            <p>2023 - TIRBOIS Romain</p>
+                            <h5>Logiciel développé par des étudiants en BTS SIO</h5>
+                            <p>au lycée NDLP d'Avranches : </p>
+                            <p>2020 - Dylan HOCHET & Rémi LEYSENNE</p>
+                            <p>2023 - Romain TIRBOIS</p>
+                            <p>2024 - Léo GERMAIN</p>
+                            <p>2025 - Kylian LENESLEY</p>
                             <hr>
                             <p>Merci aux differents développeurs des bibliothèques utilisées</p>
                             <p>
                                 <a href='https://github.com/dompdf/dompdf' target="_blank"><u>dompdf</u></a></br>
-                                <a href='https://github.com/marcaube/ObHighchartsBundle' target="_blank"><u>ObHighchartsBundle</u></a>
+                                <a href='https://github.com/94noni/ObHighchartsBundle' target="_blank"><u>ObHighchartsBundle</u></a>
                             </p>
                             <p>Et bien évidemment à <a href='https://github.com/symfony/symfony/' target="_blank"><u>Symfony</u></a> sans quoi ce projet n'aurait pas été possible !</p>
                             <hr>
                             <h5>Version</h5>
-                            <p>1.0.0</p>
+                            <p>2.0.4 (PHP 8.4 et Symfony 7.4)</p>
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="col-md-12 col-lg-12 col-xl-12 py-4">
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        {% set flashClass = label == 'error' ? 'danger' : label %}
+                        <div class="alert alert-{{ flashClass }}" role="alert">
+                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                            {{ message|trans }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
             </div>
 
             <div class="starter-template mt-5 mb-5">
@@ -110,11 +125,11 @@
             </div>
 
             {% if app.request.get('_route') == 'app_login' %}
-                <h4 class="h4 text-center fixed-bottom">©{{ "now"|date("Y") }} - Atedi</h4>
+                <h4 class="h4 text-center fixed-bottom">©{{ "now"|date("Y") }} - ATEDI</h4>
             {% endif %}
 
         </main>
-        
+
     </body>
 </html>
 

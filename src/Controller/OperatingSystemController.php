@@ -4,11 +4,12 @@ namespace App\Controller;
 
 use App\Entity\OperatingSystem;
 use App\Form\OperatingSystemType;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\InterventionRepository;
 use App\Repository\OperatingSystemRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/operating/system')]
@@ -23,16 +24,15 @@ class OperatingSystemController extends AbstractController
     }
 
     #[Route("/new", name: "operating_system_new", methods: ["GET","POST"])]
-    public function new(Request $request): Response
+    public function new(Request $request, EntityManagerInterface $em): Response
     {
         $operatingSystem = new OperatingSystem();
         $form = $this->createForm(OperatingSystemType::class, $operatingSystem);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($operatingSystem);
-            $entityManager->flush();
+            $em->persist($operatingSystem);
+            $em->flush();
 
             if ( $request->query->has('s') == 'intervention') {
                 return $this->redirectToRoute('intervention_new');
@@ -61,13 +61,13 @@ class OperatingSystemController extends AbstractController
     }
 
     #[Route("/{id}/edit", name: "operating_system_edit", methods: ["GET","POST"])]
-    public function edit(Request $request, OperatingSystem $operatingSystem): Response
+    public function edit(Request $request, OperatingSystem $operatingSystem, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(OperatingSystemType::class, $operatingSystem);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $em->flush();
 
             return $this->redirectToRoute('operating_system_show', [
                 'id' => $operatingSystem->getId(),
@@ -81,12 +81,17 @@ class OperatingSystemController extends AbstractController
     }
 
     #[Route("/{id}", name: "operating_system_delete", methods: ["DELETE"])]
-    public function delete(Request $request, OperatingSystem $operatingSystem): Response
+    public function delete(Request $request, OperatingSystem $operatingSystem, EntityManagerInterface $em): Response
     {
         if ($this->isCsrfTokenValid('delete'.$operatingSystem->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($operatingSystem);
-            $entityManager->flush();
+            // Vérifier s'il y a des interventions liées
+            if ($operatingSystem->getInterventions()->count() > 0) {
+                $this->addFlash('error', 'Impossible de supprimer "' . $operatingSystem->getTitle() . '". Ce système d\'exploitation est utilisé par ' . $operatingSystem->getInterventions()->count() . ' intervention(s). Supprimez d\'abord les interventions associées.');
+            } else {
+                $em->remove($operatingSystem);
+                $em->flush();
+                $this->addFlash('success', 'Le système d\'exploitation a été supprimé avec succès.');
+            }
         }
 
         return $this->redirectToRoute('operating_system_index');

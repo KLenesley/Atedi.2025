@@ -89,13 +89,6 @@
                             <tr>
                                 <td align="center" class='py-1 border-on text-center' style="padding-top: 18px; padding-bottom: 14px;" colspan="2">{{ intervention.interventionReport.severity }}</td>
                             </tr>
-                            {% if (intervention.interventionReport.severity) != "Matériel non infecté" %}
-                            <tr>
-                                <td align="center" class='py-2 border-on text-center' colspan="2">
-                                    [{{ "Virus" in intervention.interventionReport.severityProblem ? "X" : "_" }}]Virus
-                                </td>
-                            </tr>
-                            {% endif %}
                         </tbody>
                     </table>
                 </div>
@@ -144,17 +137,13 @@
 
                 <div class='p-2 mt-3'>
                 <div class='header'>
-                    <div align="center" class='text-center font-weight-bold' style="font-size: 18px;">Info CrystalDisk</div>
+                    <div align="center" class='text-center font-weight-bold' style="font-size: 18px;">Info CrystalDisk & batterie</div>
                 </div> 
 
                 <table width="100%" class='w-100'>
                     <tbody>
                         <tr>
-                            <td align="left" class='py-1 border-on px-2 text-center' width="100%"> Etat du Disk :                       
-                                <div align="center" class='checkbox-item'>[{{ "Correct" in intervention.interventionReport.diskState ? "X" : "_" }}]Correct</div> 
-                                <div align="center" class='checkbox-item'>[{{ "Prudence" in intervention.interventionReport.diskState ? "X" : "_" }}]Prudence</div> 
-                                <div align="center" class='checkbox-item'>[{{ "Mauvais" in intervention.interventionReport.diskState ? "X" : "_" }}]Mauvais</div> 
-                            </td>
+                            <td align="left" class='py-1 border-on px-2 text-center' width="100%"> Etat du Disk : {{ intervention.interventionReport.diskState }}</td>
                         </tr>
                         <tr>
                             <td class='large-mb border-on px-2'><span class='font-weight-bold'>Temps de fonctionnement : {% if intervention.interventionReport.uptime is not null %}{{ intervention.interventionReport.uptime}}H{% else %}Non indiqué {% endif %}</span></td>

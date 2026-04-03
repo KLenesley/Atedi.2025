@@ -19,7 +19,7 @@ class AtediHelper
 
             if (strpos($price,'.')) {
                 $delimiter = '.';
-            } else if (strpos($price,',')) {
+            } elseif (strpos($price,',')) {
                 $delimiter = ',';
             } else {
                 $delimiter = " ";
@@ -30,20 +30,20 @@ class AtediHelper
             if (count($taskPrice) > 1) {
                 $taskEuro = intval($taskPrice[0]);
                 $taskCents = intval($taskPrice[1]);
-                if (strlen($taskPrice[1]) == 1) {
-                    $taskCents = $taskCents*10;
+                if (strlen($taskPrice[1]) === 1) {
+                    $taskCents *= 10;
                 }
             } else {
                 $taskEuro = intval($taskPrice[0]);
                 $taskCents = 0;
             }
 
-            $totalEuro = $totalEuro + $taskEuro;
-            $totalCents = $totalCents + $taskCents;
+            $totalEuro += $taskEuro;
+            $totalCents += $taskCents;
 
             if ( $totalCents >= 100 ) {
                 $totalEuro++;
-                $totalCents = $totalCents - 100;
+                $totalCents -= 100;
             }
         }
 
@@ -55,7 +55,7 @@ class AtediHelper
             
             if (strpos($price,'.')) {
                 $delimiter = '.';
-            } else if (strpos($price,',')) {
+            } elseif (strpos($price,',')) {
                 $delimiter = ',';
             } else {
                 $delimiter = " ";
@@ -66,30 +66,29 @@ class AtediHelper
             if (count($billingLinePrice) > 1) {
                 $billingLineEuro = intval($billingLinePrice[0]);
                 $billingLineCents = intval($billingLinePrice[1]);
-                if (strlen($billingLinePrice[1]) == 1) {
-                    $billingLineCents = $billingLineCents*10;
+                if (strlen($billingLinePrice[1]) === 1) {
+                    $billingLineCents *= 10;
                 }
             } else {
                 $billingLineEuro = intval($billingLinePrice[0]);
                 $billingLineCents = 0;
             }
 
-            $totalEuro = $totalEuro + $billingLineEuro;
-            $totalCents = $totalCents + $billingLineCents;
+            $totalEuro += $billingLineEuro;
+            $totalCents += $billingLineCents;
 
             if ( $totalCents >= 100 ) {
                 $totalEuro++;
-                $totalCents = $totalCents - 100;
+                $totalCents -= 100;
             }
         }
 
         $totalEuro = strval($totalEuro);
         $totalCents = strval($totalCents);
-        if (strlen($totalCents) == 1) {
+        if (strlen($totalCents) === 1) {
             $totalCents = '0'.$totalCents;
         }
-        $totalPrice = $totalEuro.','.$totalCents;
 
-        return $totalPrice;
+        return $totalEuro.','.$totalCents;
     }
 }

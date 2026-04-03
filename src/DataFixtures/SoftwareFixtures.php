@@ -9,7 +9,7 @@ use App\Entity\Software;
 
 class SoftwareFixtures extends Fixture
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager):void
     {
         $data = new Software();
         $data->setTitle('ADW Cleaner');

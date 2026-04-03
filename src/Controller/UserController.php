@@ -3,18 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\UserType;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use App\Security\LoginFormAuthentificatorAuthenticator;
-use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[Route('/user')]
 class UserController extends AbstractController
@@ -27,11 +23,11 @@ class UserController extends AbstractController
         ]);
     }
 
-     #[Route("/register", name: "user_register")]
-    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, Security $security): Response
+    #[Route("/register", name: "user_register")]
+    public function register(Request $request, UserPasswordHasherInterface $passwordEncoder, EntityManagerInterface $em): Response
     {
         // Récupération de l'utilisateur actuellement authentifié
-        $currentUser = $security->getUser();
+        $currentUser = $this->getUser();
 
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -39,27 +35,26 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Encodez le mot de passe avant de le définir
-            $encodedPassword = $passwordEncoder->encodePassword($user, $user->getPassword());
+            $encodedPassword = $passwordEncoder->hashPassword($user, $form->get('plainPassword')->getData());
             $user->setPassword($encodedPassword);
 
             // Persistez l'utilisateur dans la base de données
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($user);
-            $entityManager->flush();
+            $em->persist($user);
+            $em->flush();
 
             // Reconnecter l'utilisateur initialement authentifié
-            $this->get('security.token_storage')->setToken(null);
+            // $this->get('security.token_storage')->setToken(null);
 
             // Redirigez ici après la création du compte
             // (par exemple, vers une page de confirmation)
             $this->addFlash('success', 'Compte créé avec succès.');
 
-            // Rétablir l'utilisateur connecté précédemment
-            if ($currentUser !== null) {
-                $token = new UsernamePasswordToken($currentUser, null, 'main', $currentUser->getRoles());
-                $this->get('security.token_storage')->setToken($token);
-                $this->get('session')->set('_security_main', serialize($token));
-            }
+            // // Rétablir l'utilisateur connecté précédemment
+            // if ($currentUser instanceof \Symfony\Component\Security\Core\User\UserInterface) {
+            //     $token = new UsernamePasswordToken($currentUser, null, 'main', $currentUser->getRoles());
+            //     $this->get('security.token_storage')->setToken($token);
+            //     $this->get('session')->set('_security_main', serialize($token));
+            // }
 
             return $this->redirectToRoute('user_index'); // Redirection vers la page d'accueil ou autre
         }
@@ -69,13 +64,23 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route("/{id}", name: "user_delete", methods: ["DELETE"])]
-    public function delete(Request $request, User $user): Response
+    #[Route("/delete/{id}", name: "user_delete", methods: ["DELETE"])]
+    public function delete(Request $request, User $user, EntityManagerInterface $em): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($user);
-            $entityManager->flush();
+        $userId = $user->getId();
+        $userName = $user->getFirstName();
+
+        if ($this->isCsrfTokenValid('delete' . $userId, $request->request->get('_token'))) {
+            // Vérifier s'il y a des interventions liées
+            if ($user->getIntervention()->count() > 0) {
+                $this->addFlash('error', 'Impossible de supprimer l\'utilisateur "' . $user->getEmail() . '". Cet utilisateur est assigné à ' . $user->getIntervention()->count() . ' intervention(s). Supprimez d\'abord les interventions associées.');
+            } else {
+                $em->remove($user);
+                $em->flush();
+                $this->addFlash('success', "Suppression de l'utilisateur " . $userName . " réussie.");
+            }
+        } else {
+            $this->addFlash('error', "Échec de la suppression de l'utilisateur n°" . $userId . ".");
         }
 
         return $this->redirectToRoute('user_index');

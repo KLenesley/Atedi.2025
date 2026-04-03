@@ -10,7 +10,7 @@ use App\Repository\OperatingSystemRepository;
 use Ob\HighchartsBundle\Highcharts\Highchart;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use App\Repository\InterventionReportRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -57,10 +57,10 @@ class StatisticsController extends AbstractController
             $name = $technician->getLastName().' '.$technician->getFirstName();
 
             $dataEntry = array();
-            array_push($dataEntry,$name);
-            array_push($dataEntry,$count);
+            $dataEntry[] = $name;
+            $dataEntry[] = $count;
             
-            array_push($data,$dataEntry);
+            $data[] = $dataEntry;
         }
 
         $chart1->series(array(array(
@@ -108,10 +108,10 @@ class StatisticsController extends AbstractController
             $name = $task->getTitle();
 
             $dataEntry = array();
-            array_push($dataEntry,$name);
-            array_push($dataEntry,$count);
+            $dataEntry[] = $name;
+            $dataEntry[] = $count;
             
-            array_push($data,$dataEntry);
+            $data[] = $dataEntry;
         }
 
         $chart2->series(array(array(
@@ -159,10 +159,10 @@ class StatisticsController extends AbstractController
             $name = $equipment->getTitle();
 
             $dataEntry = array();
-            array_push($dataEntry,$name);
-            array_push($dataEntry,$count);
+            $dataEntry[] = $name;
+            $dataEntry[] = $count;
             
-            array_push($data,$dataEntry);
+            $data[] = $dataEntry;
         }
 
         $chart3->series(array(array(
@@ -209,10 +209,10 @@ class StatisticsController extends AbstractController
             $name = $operatingSystem->getTitle();
 
             $dataEntry = array();
-            array_push($dataEntry,$name);
-            array_push($dataEntry,$count);
+            $dataEntry[] = $name;
+            $dataEntry[] = $count;
             
-            array_push($data,$dataEntry);
+            $data[] = $dataEntry;
         }
 
         $chart4->series(array(array(

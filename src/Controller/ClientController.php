@@ -6,10 +6,11 @@ namespace App\Controller;
 use App\Entity\Client;
 use App\Form\ClientType;
 use App\Repository\ClientRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\InterventionRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/client')]
@@ -23,8 +24,8 @@ class ClientController extends AbstractController
         ]);
     }
 
-    #[Route("/new", name: "client_new", methods: ["GET","POST"])]
-    public function new(Request $request): Response
+    #[Route("/new", name: "client_new", methods: ["GET", "POST"])]
+    public function new(Request $request, EntityManagerInterface $em): Response
     {
 
 
@@ -33,15 +34,14 @@ class ClientController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($client);
-            $entityManager->flush();
+            $em->persist($client);
+            $em->flush();
 
             if ($request->query->get('s') === 'intervention') {
                 // Rediriger vers /intervention/new?client-id=5
                 return $this->redirectToRoute('intervention_new', ['client-id' => $client->getId()]);
             }
-            
+
 
             return $this->redirectToRoute('client_show', [
                 'id' => $client->getId(),
@@ -65,14 +65,14 @@ class ClientController extends AbstractController
         ]);
     }
 
-    #[Route("/{id}/edit", name: "client_edit", methods: ["GET","POST"])]
-    public function edit(Request $request, Client $client): Response
+    #[Route("/{id}/edit", name: "client_edit", methods: ["GET", "POST"])]
+    public function edit(Request $request, Client $client, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(ClientType::class, $client);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $em->flush();
 
             return $this->redirectToRoute('client_show', [
                 'id' => $client->getId(),
@@ -85,13 +85,22 @@ class ClientController extends AbstractController
         ]);
     }
 
-    #[Route("/{id}", name: "client_delete", methods: ["DELETE"])]
-    public function delete(Request $request, Client $client): Response
+    #[Route("/{id}", name: "client_delete", methods: ["POST"])]
+    public function delete(Request $request, Client $client, EntityManagerInterface $em): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$client->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($client);
-            $entityManager->flush();
+        $clientId = $client->getId();
+
+        if ($this->isCsrfTokenValid('delete' . $clientId, $request->request->get('_token'))) {
+            // Vérifier s'il y a des interventions liées
+            if ($client->getInterventions()->count() > 0) {
+                $this->addFlash('error', 'Impossible de supprimer le client "' . $client->getLastName() . '". Ce client a ' . $client->getInterventions()->count() . ' intervention(s). Supprimez d\'abord les interventions associées.');
+            } else {
+                $em->remove($client);
+                $em->flush();
+                $this->addFlash('success', "Suppression du client n°" . $clientId . " réussie.");
+            }
+        } else {
+            $this->addFlash('error', "Échec de la suppression du client n°" . $clientId . ".");
         }
 
         return $this->redirectToRoute('client_index');
