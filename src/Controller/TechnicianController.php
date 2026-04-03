@@ -87,8 +87,14 @@ class TechnicianController extends AbstractController
     public function delete(Request $request, Technician $technician, EntityManagerInterface $em): Response
     {
         if ($this->isCsrfTokenValid('delete'.$technician->getId(), $request->request->get('_token'))) {
-            $em->remove($technician);
-            $em->flush();
+            // Vérifier s'il est assigné à des rapports d'intervention
+            if ($technician->getInterventionReports()->count() > 0) {
+                $this->addFlash('error', 'Impossible de supprimer le technicien "' . $technician->getLastName() . ' ' . $technician->getFirstName() . '". Ce technicien est assigné à ' . $technician->getInterventionReports()->count() . ' rapport(s) d\'intervention. Supprimez d\'abord les assignations.');
+            } else {
+                $em->remove($technician);
+                $em->flush();
+                $this->addFlash('success', 'Le technicien a été supprimé avec succès.');
+            }
         }
 
         return $this->redirectToRoute('technician_index');

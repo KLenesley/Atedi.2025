@@ -2,6 +2,9 @@
 framework:
     secret: '%env(APP_SECRET)%'
 
+    # Allow HTML forms to spoof HTTP verbs via the _method field (PUT/PATCH/DELETE).
+    http_method_override: true
+
     # Note that the session will be started ONLY if you read or write from it.
     session: true
 

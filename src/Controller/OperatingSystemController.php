@@ -84,8 +84,14 @@ class OperatingSystemController extends AbstractController
     public function delete(Request $request, OperatingSystem $operatingSystem, EntityManagerInterface $em): Response
     {
         if ($this->isCsrfTokenValid('delete'.$operatingSystem->getId(), $request->request->get('_token'))) {
-            $em->remove($operatingSystem);
-            $em->flush();
+            // Vérifier s'il y a des interventions liées
+            if ($operatingSystem->getInterventions()->count() > 0) {
+                $this->addFlash('error', 'Impossible de supprimer "' . $operatingSystem->getTitle() . '". Ce système d\'exploitation est utilisé par ' . $operatingSystem->getInterventions()->count() . ' intervention(s). Supprimez d\'abord les interventions associées.');
+            } else {
+                $em->remove($operatingSystem);
+                $em->flush();
+                $this->addFlash('success', 'Le système d\'exploitation a été supprimé avec succès.');
+            }
         }
 
         return $this->redirectToRoute('operating_system_index');
