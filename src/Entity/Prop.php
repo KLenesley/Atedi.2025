@@ -5,16 +5,6 @@ namespace App\Entity;
 use App\Entity\Intervention;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\PropRepository;
-<<<<<<< HEAD
-use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-
-/**
- * @ORM\Entity(repositoryClass="App\Repository\PropRepository")
- * @UniqueEntity(fields={"title"}, message="Il existe déjà un matériel avec ce nom")
- * @ORM\Table(name="tbl_prop")
- */
-=======
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -22,7 +12,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[ORM\Entity(repositoryClass: PropRepository::class)]
 #[UniqueEntity(fields: ['title'], message: 'Il existe déjà un matériel avec ce nom')]
 #[ORM\Table(name: 'tbl_prop')]
->>>>>>> origin/production
 class Prop
 {
     #[ORM\Id]
@@ -33,16 +22,9 @@ class Prop
     #[ORM\Column(type: 'string', length: 255)]
     private $title;
 
-<<<<<<< HEAD
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Intervention", mappedBy="prop")
-     */
-    private $interventions;
-=======
     
     #[ORM\ManyToMany(targetEntity: Intervention::class, mappedBy: 'props')]     
     private Collection $interventions;
->>>>>>> origin/production
 
     public function __construct()
     {
