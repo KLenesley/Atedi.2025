@@ -66,7 +66,7 @@ class ActionController extends AbstractController
         ]);
     }
 
-    #[Route("/{id}", name: "action_delete", methods: ["DELETE"])]
+    #[Route("/{id}", name: "action_delete", methods: ["POST", "DELETE"])]
     public function delete(Request $request, Action $action, EntityManagerInterface $em): Response
     {
         if ($this->isCsrfTokenValid('delete'.$action->getId(), $request->request->get('_token'))) {

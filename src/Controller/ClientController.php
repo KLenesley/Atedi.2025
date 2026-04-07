@@ -85,7 +85,7 @@ class ClientController extends AbstractController
         ]);
     }
 
-    #[Route("/{id}", name: "client_delete", methods: ["POST"])]
+    #[Route("/{id}", name: "client_delete", methods: ["POST", "DELETE"])]
     public function delete(Request $request, Client $client, EntityManagerInterface $em): Response
     {
         $clientId = $client->getId();

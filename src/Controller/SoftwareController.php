@@ -66,7 +66,7 @@ class SoftwareController extends AbstractController
         ]);
     }
 
-    #[Route("/{id}", name: "software_delete", methods: ["DELETE"])]
+    #[Route("/{id}", name: "software_delete", methods: ["POST", "DELETE"])]
     public function delete(Request $request, Software $software, EntityManagerInterface $em): Response
     {
         if ($this->isCsrfTokenValid('delete'.$software->getId(), $request->request->get('_token'))) {

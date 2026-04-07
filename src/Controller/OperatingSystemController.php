@@ -80,7 +80,7 @@ class OperatingSystemController extends AbstractController
         ]);
     }
 
-    #[Route("/{id}", name: "operating_system_delete", methods: ["DELETE"])]
+    #[Route("/{id}", name: "operating_system_delete", methods: ["POST", "DELETE"])]
     public function delete(Request $request, OperatingSystem $operatingSystem, EntityManagerInterface $em): Response
     {
         if ($this->isCsrfTokenValid('delete'.$operatingSystem->getId(), $request->request->get('_token'))) {

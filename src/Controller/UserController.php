@@ -64,7 +64,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route("/delete/{id}", name: "user_delete", methods: ["DELETE"])]
+    #[Route("/delete/{id}", name: "user_delete", methods: ["POST", "DELETE"])]
     public function delete(Request $request, User $user, EntityManagerInterface $em): Response
     {
         $userId = $user->getId();

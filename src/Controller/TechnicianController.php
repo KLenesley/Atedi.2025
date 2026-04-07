@@ -82,7 +82,7 @@ class TechnicianController extends AbstractController
         ]);
     }
 
-    #[Route("/{id}", name: "technician_delete", methods: ["DELETE"])]
+    #[Route("/{id}", name: "technician_delete", methods: ["POST", "DELETE"])]
     public function delete(Request $request, Technician $technician, EntityManagerInterface $em): Response
     {
         if ($this->isCsrfTokenValid('delete'.$technician->getId(), $request->request->get('_token'))) {

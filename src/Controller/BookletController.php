@@ -66,7 +66,7 @@ class BookletController extends AbstractController
         ]);
     }
 
-    #[Route("/{id}", name: "booklet_delete", methods: ["DELETE"])]
+    #[Route("/{id}", name: "booklet_delete", methods: ["POST", "DELETE"])]
     public function delete(Request $request, Booklet $booklet, EntityManagerInterface $em): Response
     {
         if ($this->isCsrfTokenValid('delete'.$booklet->getId(), $request->request->get('_token'))) {
